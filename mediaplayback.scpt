@@ -1,4 +1,11 @@
 tell application "System Events"
+    if frontmost of application "Tidal" then
+        tell process "TIDAL"
+            click menu item 0 of menu "Playback" of menu bar 1
+        end tell
+        return
+    end if
+
     if (get name of every application process) contains "Safari" then
         tell application "Safari"
             repeat with t in tabs of windows
