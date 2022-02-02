@@ -19,6 +19,16 @@ tell application "System Events"
         end tell
     end if
 
+    if (get name of every application process) contains "Logic Pro X" then
+        tell process "Logic Pro"
+            set frontmost to true
+            key code 49
+        end tell
+
+        set visible of process "Logic Pro" to false
+        return
+    end if
+
     if (get name of every application process) contains "Tidal" then
         tell process "TIDAL"
             click menu item 0 of menu "Playback" of menu bar 1
