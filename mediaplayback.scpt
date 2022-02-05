@@ -34,6 +34,7 @@ tell application "System Events"
             click menu item 0 of menu "Playback" of menu bar 1
         end tell
     else
+        display notification "Launching Tidal..." with title "Media"
         tell application "Tidal" to activate
     end if
 end tell
