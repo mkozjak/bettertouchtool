@@ -29,6 +29,11 @@ tell application "System Events"
         return
     end if
 
+    if (get name of every application process) contains "Music" then
+        tell app "Music" to playpause
+        return
+    end if
+
     if (get name of every application process) contains "Tidal" then
         tell process "TIDAL"
             click menu item 0 of menu "Playback" of menu bar 1
