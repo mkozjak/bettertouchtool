@@ -3,7 +3,6 @@ tell application "Finder"
 end tell
 set mydir to POSIX path of currentDir
 
-
 tell application "iTerm"
 	if (count of window) = 0 then
 		set awindow to (make new window)
@@ -14,8 +13,8 @@ tell application "iTerm"
 			exit repeat
 		end if
 	end repeat
-	
-	
+
+
 	tell awindow
 		set mytab to create tab with default profile
 		tell (first session of mytab)
