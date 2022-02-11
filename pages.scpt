@@ -7,7 +7,11 @@ tell application "Safari"
         set action to get_string_variable "pageAction"
     end tell
 
-    set pageMode to do shell script "if [[ " & quoted form of currentURL & " =~ google\\..+/search ]]; then echo google; elif [[ " & quoted form of currentURL & " =~ github.com/.+/issues ]]; then echo github; fi"
+    set pageMode to do shell script "if [[ " & ¬
+        quoted form of currentURL & ¬
+        " =~ google\\..+/search ]]; then echo google; elif [[ " & ¬
+        quoted form of currentURL & ¬
+        " =~ github.com/.+/issues ]]; then echo github; fi"
 
     if pageMode is equal to "google" then
         if action is equal to "previous" then
