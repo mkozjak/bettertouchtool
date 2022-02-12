@@ -1,31 +1,31 @@
 tell application "Safari"
     -- github issues: document.getElementsByClassName('previous_page')[0].click()
-    -- google results: document.getElementById('pnprev').click()
+    -- google search results: document.getElementById('pnprev').click()
+    -- google images results qs: tbm=isch
     set currentURL to (get URL of current tab of window 1)
 
     tell application "BetterTouchTool"
         set action to get_string_variable "pageAction"
     end tell
 
-    set pageMode to do shell script "if [[ " & ¬
-        quoted form of currentURL & ¬
-        " =~ google\\..+/search ]]; then echo google; elif [[ " & ¬
-        quoted form of currentURL & ¬
-        " =~ github.com/.+/issues ]]; then echo github; fi"
+    set pageMode to do shell script ¬
+        "if [[ " & quoted form of currentURL & " =~ google\\..+/search ]]; then echo googlesearch; " & ¬
+        "elif [[ " & quoted form of currentURL & " =~ github.com/.+/issues ]]; then echo githubissues; " & ¬
+        "fi"
 
-    if pageMode is equal to "google" then
-        if action is equal to "previous" then
+    if pageMode is equal to "googlesearch" then
+        if action is equal to "previousPage" then
             set element to "pnprev"
-        else
+        else if action is equal to "nextPage" then
             set element to "pnnext"
         end if
 
         do JavaScript "document.getElementById('" & element & "').click();" in current tab of window 1
         return
-    else if pageMode is equal to "github" then
-        if action is equal to "previous" then
+    else if pageMode is equal to "githubissues" then
+        if action is equal to "previousPage" then
             set element to "previous_page"
-        else
+        else if action is equal to "nextPage" then
             set element to "next_page"
         end if
 
