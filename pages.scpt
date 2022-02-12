@@ -9,7 +9,8 @@ tell application "Safari"
     end tell
 
     set pageMode to do shell script ¬
-        "if [[ " & quoted form of currentURL & " =~ google\\..+/search ]]; then echo googlesearch; " & ¬
+        "if [[ " & quoted form of currentURL & " =~ google\\..+/search ]]; then " & ¬
+            "if [[ " & quoted form of currentURL & " =~ tbm=isch ]]; then echo googleimages; else echo googlesearch; fi; " & ¬
         "elif [[ " & quoted form of currentURL & " =~ github.com/.+/issues ]]; then echo githubissues; " & ¬
         "fi"
 
@@ -22,6 +23,10 @@ tell application "Safari"
 
         do JavaScript "document.getElementById('" & element & "').click();" in current tab of window 1
         return
+    else if pageMode is equal to "googleimages" then
+        if action is equal to "openImage" then
+            display dialog "should open image directly"
+        end if
     else if pageMode is equal to "githubissues" then
         if action is equal to "previousPage" then
             set element to "previous_page"
