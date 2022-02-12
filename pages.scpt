@@ -27,6 +27,8 @@ tell application "Safari"
         if action is equal to "openImage" then
             display dialog "should open image directly"
         end if
+
+        return
     else if pageMode is equal to "githubissues" then
         if action is equal to "previousPage" then
             set element to "previous_page"
