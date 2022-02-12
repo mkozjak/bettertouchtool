@@ -25,7 +25,9 @@ tell application "Safari"
         return
     else if pageMode is equal to "googleimages" then
         if action is equal to "openImage" then
-            display dialog "should open image directly"
+            do JavaScript "var items = document.querySelectorAll(':hover'); for (let c = 0; c < items.length; c++) { " & ¬
+                "if (items[c].nodeName === 'A' && items[c].href !== '') { var p = new URL(items[c].href); var n = p.searchParams.get('imgurl'); " & ¬
+                "window.open(n, '_self'); break } };" in current tab of window 1
         end if
 
         return
