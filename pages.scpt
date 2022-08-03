@@ -11,7 +11,7 @@ tell application "Safari"
     set pageMode to do shell script ¬
         "if [[ " & quoted form of currentURL & " =~ google\\..+/search ]]; then " & ¬
             "if [[ " & quoted form of currentURL & " =~ tbm=isch ]]; then echo googleimages; else echo googlesearch; fi; " & ¬
-        "elif [[ " & quoted form of currentURL & " =~ github.com/.+/issues ]]; then echo githubissues; " & ¬
+        "elif [[ " & quoted form of currentURL & " =~ github.com/.+/(search|issues) ]]; then echo githubresults; " & ¬
         "fi"
 
     if pageMode is equal to "googlesearch" then
@@ -32,7 +32,7 @@ tell application "Safari"
         end if
 
         return
-    else if pageMode is equal to "githubissues" then
+    else if pageMode is equal to "githubresults" then
         if action is equal to "previousPage" then
             set element to "previous_page"
         else if action is equal to "nextPage" then
