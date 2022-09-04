@@ -2,6 +2,11 @@
 -- To be used with a three-finger double-tap on the macOS Dock Bin icon
 -- Adapted from https://community.folivora.ai/t/enhanced-dock-for-macos/22364
 
+tell application "System Events"
+    -- Store current app's ID so we can turn the focus back to it after we empty the bin
+    set frontAppID to bundle identifier of first process whose frontmost is true
+end tell
+
 tell application "System Events" to tell process "Dock" to try
     set frontmost to true
     delay 0.2
@@ -37,4 +42,7 @@ if AppSr is "AXTrashDockItem" then
             empty trash
         end if
     end tell
+
+    -- Return focus to the actual app in use
+    activate application id frontAppID
 end if
