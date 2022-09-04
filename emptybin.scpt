@@ -1,5 +1,5 @@
 -- Empties the trash bin without warning the user
--- To be used with a two finger force-click on the macOS Dock Bin icon
+-- To be used with a three-finger double-tap on the macOS Dock Bin icon
 -- Adapted from https://community.folivora.ai/t/enhanced-dock-for-macos/22364
 
 tell application "System Events" to tell process "Dock" to try
