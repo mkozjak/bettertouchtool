@@ -1,5 +1,6 @@
 -- Empties the trash bin without warning the user
--- To be used with a three-finger double-tap on the macOS Dock Bin icon
+-- Quits TIDAL app
+-- To be used with a three-finger double-tap on macOS Dock items
 -- Adapted from https://community.folivora.ai/t/enhanced-dock-for-macos/22364
 
 tell application "System Events"
@@ -28,7 +29,8 @@ on error
     return
 end try
 
-if AppSr is "AXTrashDockItem" then
+-- if AppSr is "AXTrashDockItem" then
+if AppNm is "Bin" then
     tell application "Finder"
         if (warns before emptying of trash) then
             set warns before emptying of trash to false
@@ -41,6 +43,14 @@ if AppSr is "AXTrashDockItem" then
         else
             empty trash
         end if
+    end tell
+
+    -- Return focus to the actual app in use
+    activate application id frontAppID
+
+else if AppNm is "TIDAL" then
+    tell application "TIDAL"
+        quit
     end tell
 
     -- Return focus to the actual app in use
