@@ -48,8 +48,8 @@ if AppNm is "Bin" then
     -- Return focus to the actual app in use
     activate application id frontAppID
 
-else if AppNm is "TIDAL" then
-    tell application "TIDAL"
+else
+    tell application AppNm
         quit
     end tell
 
