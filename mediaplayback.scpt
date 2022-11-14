@@ -1,10 +1,17 @@
 tell application "System Events"
-    if frontmost of application "Tidal" then
-        tell process "TIDAL"
-            click menu item 0 of menu "Playback" of menu bar 1
-        end tell
-        return
-    end if
+    try
+        tell application "Finder" to get application file id "com.apple.tidal"
+        set tidalInstalled to true
+
+        if frontmost of application "Tidal" then
+            tell process "TIDAL"
+                click menu item 0 of menu "Playback" of menu bar 1
+            end tell
+            return
+        end if
+    on error
+        set tidalInstalled to false
+    end try
 
     if (get name of every application process) contains "Safari" then
         tell application "Safari"
@@ -29,17 +36,16 @@ tell application "System Events"
         return
     end if
 
-    if (get name of every application process) contains "Music" then
-        tell app "Music" to playpause
-        return
-    end if
-
     if (get name of every application process) contains "Tidal" then
         tell process "TIDAL"
             click menu item 0 of menu "Playback" of menu bar 1
         end tell
+    end if
+
+    if (get name of every application process) contains "Music" then
+        tell app "Music" to playpause
+        return
     else
-        display notification "Launching Tidal..." with title "Media"
-        tell application "Tidal" to activate
+        tell application "Music" to activate
     end if
 end tell
