@@ -11,7 +11,7 @@ tell application "Safari"
     set pageMode to do shell script ¬
         "if [[ " & quoted form of currentURL & " =~ google\\..+/search ]]; then " & ¬
             "if [[ " & quoted form of currentURL & " =~ tbm=isch ]]; then echo googleimages; else echo googlesearch; fi; " & ¬
-        "elif [[ " & quoted form of currentURL & " =~ github.com/.+/(search|issues) ]]; then echo githubresults; " & ¬
+        "elif [[ " & quoted form of currentURL & " =~ github.com/.+/(search|issues|pulls) ]]; then echo githubresults; " & ¬
         "fi"
 
     if pageMode is equal to "googlesearch" then
