@@ -47,11 +47,7 @@ tell application "System Events"
     end if
 
     if (get name of every application process) contains "Deezer" then
-        -- click menu item 0 of menu "Play" of menu bar 1 of application process "Deezer"
-        tell process "Deezer"
-            set frontmost to true
-            keystroke Space
-        end tell
+        tell application "Shortcuts Events" to run shortcut "Play/Pause"
 
         return
     end if
