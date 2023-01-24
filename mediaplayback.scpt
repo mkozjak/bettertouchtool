@@ -1,18 +1,4 @@
 tell application "System Events"
-    -- try
-    --     tell application "Finder" to get application file id "com.tidal.desktop"
-    --     set tidalInstalled to true
-
-    --     if frontmost of application "Tidal" then
-    --         tell process "TIDAL"
-    --             click menu item 0 of menu "Playback" of menu bar 1
-    --         end tell
-    --         return
-    --     end if
-    -- on error
-    --     set tidalInstalled to false
-    -- end try
-
     set defaultPlayer to "Tidal"
 
     if (get name of every application process) contains "Safari" then
