@@ -13,7 +13,7 @@ tell application "System Events"
     --     set tidalInstalled to false
     -- end try
 
-    set defaultPlayer to "Deezer"
+    set defaultPlayer to "Tidal"
 
     if (get name of every application process) contains "Safari" then
         tell application "Safari"
