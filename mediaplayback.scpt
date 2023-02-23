@@ -42,6 +42,7 @@ tell application "System Events"
         tell app "Music" to playpause
         return
     else
-        click UI element defaultPlayer of list 1 of application process "Dock"
+        -- click UI element defaultPlayer of list 1 of application process "Dock"
+	tell application "Tidal" to activate
     end if
 end tell
