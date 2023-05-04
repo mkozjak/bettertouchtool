@@ -12,6 +12,7 @@ tell application "Safari"
         "if [[ " & quoted form of currentURL & " =~ google\\..+/search ]]; then " & ¬
             "if [[ " & quoted form of currentURL & " =~ tbm=isch ]]; then echo googleimages; else echo googlesearch; fi; " & ¬
         "elif [[ " & quoted form of currentURL & " =~ github.com/.+/(search|issues|pulls) ]]; then echo githubresults; " & ¬
+        "elif [[ " & quoted form of currentURL & " =~ github.com/.+/(commits) ]]; then echo githubcommits; " & ¬
         "fi"
 
     if pageMode is equal to "googlesearch" then
@@ -40,6 +41,17 @@ tell application "Safari"
         end if
 
         do JavaScript "document.getElementsByClassName('" & element & "')[0].click()" in current tab of window 1
+        return
+    else if pageMode is equal to "githubcommits" then
+        if action is equal to "previousPage" then
+            set element to "Newer"
+        else if action is equal to "nextPage" then
+            set element to "Older"
+        end if
+
+        do JavaScript "var xpath = \"//a[text()='" & element & "']\"; " & ¬
+            "var e = document.evaluate(xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue; " & ¬
+            "e.click();" in current tab of window 1
         return
     end if
 end tell
