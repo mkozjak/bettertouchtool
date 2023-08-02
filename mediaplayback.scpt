@@ -41,6 +41,17 @@ tell application "System Events"
     if (get name of every application process) contains "Music" then
         tell app "Music" to playpause
         return
+    end if
+
+    # MPD?
+    set mpdRunning to false
+    try
+        do shell script "nc -z -w 2 localhost 6600"
+        set mpdRunning to true
+    end try
+
+    if mpdRunning then
+        do shell script "echo \"pause\" | nc localhost 6600"
     else
         click UI element defaultPlayer of list 1 of application process "Dock"
     end if
