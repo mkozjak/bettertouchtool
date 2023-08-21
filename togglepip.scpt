@@ -37,11 +37,7 @@ on error pipErrMsg
 					end tell
 
 					delay 0.2
-					keystroke "Down"
-					keystroke "Down"
-			       	keystroke return
-
-					-- click menu item "Enter Picture in Picture" of menu 1 of group 3 of toolbar 1
+					click menu item "Enter Picture in Picture" of menu 1 of group 3 of toolbar 1 of window tabName
 				end tell
 			end tell
 
