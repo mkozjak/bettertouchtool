@@ -36,7 +36,7 @@ on error pipErrMsg
 						perform action "AXShowMenu" of button 2 of UI element tabName of UI element 1 of group 3 of toolbar 1 of aWindow
 					end tell
 
-					delay 0.2
+					delay 0.1
 					click menu item "Enter Picture in Picture" of menu 1 of group 3 of toolbar 1 of window tabName
 				end tell
 			end tell
