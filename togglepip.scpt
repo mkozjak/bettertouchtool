@@ -22,29 +22,47 @@ try
 on error pipErrMsg
 
 	if pipErrMsg contains "Can’t get application process" or pipErrMsg contains "Can’t get window" then
-		try
-			tell application "Safari"
-				set docItem to first item of documents
-				set tabName to name of docItem
-			end tell
+		tell application "System Events" to set frontApp to name of first process whose frontmost is true
 
-			tell application "System Events"
-				tell application process "Safari"
-					set aWindow to window 1
-
-					tell application "System Events"
-						perform action "AXShowMenu" of button 2 of UI element tabName of UI element 1 of group 3 of toolbar 1 of aWindow
-					end tell
-
-					delay 0.1
-					click menu item "Enter Picture in Picture" of menu 1 of group 3 of toolbar 1 of window tabName
+		if frontApp = "Safari" then
+			try
+				tell application "Safari"
+					set docItem to first item of documents
+					set tabName to name of docItem
 				end tell
-			end tell
 
-			do shell script "killall System\\ Events"
-		on error safariErrMsg
-			return "Error Level::Safari:" & space & safariErrMsg
-		end try
+				tell application "System Events"
+					tell application process "Safari"
+						set aWindow to window 1
+
+						tell application "System Events"
+							perform action "AXShowMenu" of button 2 of UI element tabName of UI element 1 of group 3 of toolbar 1 of aWindow
+						end tell
+
+						delay 0.1
+						click menu item "Enter Picture in Picture" of menu 1 of group 3 of toolbar 1 of window tabName
+					end tell
+				end tell
+
+				do shell script "killall System\\ Events"
+			on error safariErrMsg
+				return "Error Level::Safari:" & space & safariErrMsg
+			end try
+		else if frontApp = "IINA" then
+			try
+				tell application "System Events"
+					tell application process "IINA"
+						try
+							click menu item "Enter Picture-in-Picture" of menu "Video" of menu bar 1
+						on error
+							click menu item "Exit Picture-in-Picture" of menu "Video" of menu bar 1
+						end try
+					end tell
+				end tell
+			on error iinaErrMsg
+				return "Error Level::IINA:" & space & iinaErrMsg
+			end try
+		end if
 	else
 		return "Error Level::PIP Agent:" & space & pipErrMsg
 	end if
