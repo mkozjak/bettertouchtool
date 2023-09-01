@@ -14,6 +14,12 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
+            opacity: 0;
+            transition: opacity 5s;
+        }
+
+        video.show {
+            opacity: 1;
         }
     </style>
 </head>
@@ -29,6 +35,12 @@
 
         // Set the playback rate
         video.playbackRate = 0.65;
+
+        // Add an event listener for when the video is loaded
+        video.addEventListener('loadeddata', () => {
+            // Add the 'show' class to the video element to trigger the opacity transition
+            video.classList.add('show');
+        });
     </script>
 </body>
 </html>
