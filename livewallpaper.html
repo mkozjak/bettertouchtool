@@ -34,6 +34,8 @@
         const video = document.getElementById('myVideo');
 
         // fade out the video right before it restarts for a smoother experience
+        // note: you can set the initial video frame as your desktop background
+        // ffmpeg -i traffic1.mp4 -vf "select=eq(n\,0)" -vframes 1 output.png
         const fadeOut = true
 
         // Set the playback rate
