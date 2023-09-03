@@ -31,7 +31,7 @@
 
     <script>
         // Get a reference to the video element
-        const video = document.getElementById('myVideo');
+        const video = document.getElementById('myVideo')
 
         // fade out the video right before it restarts for a smoother experience
         // note: you can set the initial video frame as your desktop background
@@ -39,36 +39,36 @@
         const fadeOut = true
 
         // Set the playback rate
-        video.playbackRate = 1;
+        video.playbackRate = 1
 
         // Add an event listener for when the video is loaded
         video.addEventListener('loadeddata', () => {
             // Add the 'show' class to the video element to trigger the opacity transition
-            video.classList.add('show');
+            video.classList.add('show')
 
             if (fadeOut !== true)
                 return
 
             // Get the duration of the video
-            const duration = video.duration;
+            const duration = video.duration
 
             // Calculate the time at which to start fading out the video
-            const fadeOutTime = duration - 3;
+            const fadeOutTime = duration - 3
 
             // Define a function to handle the timeupdate event
             function handleTimeUpdate() {
                 if (video.currentTime >= fadeOutTime) {
                     // Remove the 'show' class from the video element to trigger the opacity transition
-                    video.classList.remove('show');
+                    video.classList.remove('show')
                 } else if (video.currentTime < fadeOutTime && !video.classList.contains('show')) {
                     // Add back the 'show' class to trigger the opacity transition
-                    video.classList.add('show');
+                    video.classList.add('show')
                 }
             }
 
             // Add the timeupdate event listener
-            video.addEventListener('timeupdate', handleTimeUpdate);
-        });
+            video.addEventListener('timeupdate', handleTimeUpdate)
+        })
     </script>
 </body>
 </html>
