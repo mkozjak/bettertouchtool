@@ -15,7 +15,7 @@
             height: 100%;
             object-fit: cover;
             opacity: 0;
-            transition: opacity 2s;
+            transition: opacity 1s;
         }
 
         video.show {
@@ -53,7 +53,7 @@
             const duration = video.duration
 
             // Calculate the time at which to start fading out the video
-            const fadeOutTime = duration - 2
+            const fadeOutTime = duration - 1
 
             // Define a function to handle the timeupdate event
             function handleTimeUpdate() {
