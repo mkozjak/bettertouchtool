@@ -11,7 +11,7 @@ tell application "Shortcuts Events"
         if focusString is equal to "Do Not Disturb" then
             if manualToggle is equal to "true" then
                 tell application "BetterTouchTool"
-                    update_trigger "E5611CB3-DE4D-4980-BB12-A93E79CA040A" json "{\"BTTTriggerConfig\": {\"BTTTouchBarFontColor\": \"98, 89, 208, 255\"}}"
+                    update_trigger "E5611CB3-DE4D-4980-BB12-A93E79CA040A" json "{\"BTTTriggerConfig\": {\"BTTTouchBarFontColor\": \"124, 113, 255, 255\"}}"
                 end tell
             end if
 
