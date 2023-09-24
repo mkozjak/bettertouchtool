@@ -1,12 +1,12 @@
 tell application "BetterTouchTool"
-	set enabled to get_string_variable "customVariable1"
+	set enabled to get_string_variable "extraStripEnabled"
 
 	if enabled is "true" then
 		set switchVal to 0
-		set_string_variable "customVariable1" to "false"
+		set_string_variable "extraStripEnabled" to "false"
 	else
 		set switchVal to 1
-		set_string_variable "customVariable1" to "true"
+		set_string_variable "extraStripEnabled" to "true"
 	end if
 
 	update_trigger "1174E1B5-CE78-4176-9F7C-086E490E6E71" json "{\"BTTEnabled2\": " & switchVal & "}"

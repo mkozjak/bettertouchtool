@@ -1,6 +1,6 @@
 tell application "Shortcuts Events"
     tell application "BetterTouchTool"
-        set manualToggle to get_string_variable "customVariable2"
+        set manualToggle to get_string_variable "focusToggledViaControlStrip"
     end tell
 
     set focus to run shortcut "Get Current Focus"
