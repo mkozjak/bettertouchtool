@@ -37,24 +37,25 @@
     .shortcut {
         display: flex;
         flex-direction: row;
-        align-items: center;
+        align-items: flex-start;
         width: 100%;
         /* Make each shortcut item take the full width of the container */
     }
 
-    /* Style for the "Description" column */
-    .desc {
-        flex: 1;
-        /* Make the .desc element take all available space */
-        text-align: left; /* Align the text to the left in the "Description" column */
+    /* Style for the "actionription" column */
+    .action {
+        /* No need to set flex property */
+        text-align: left; /* Align the text to the left in the "actionription" column */
+        margin-right: auto; /* Push .action to the left */
     }
 
     /* Style for the "Binding" column */
     .binding {
-        /* No need to set flex property, as it will take the remaining space */
+        /* No need to set flex property */
         text-align: right; /* Align the text to the right in the "Binding" column */
+        margin-left: auto; /* Push .binding to the right */
     }
-</style>
+    </style>
 </head>
 
 <body>
@@ -99,8 +100,8 @@
             const uuid = trigger.BTTUUID;
 
             allKeyboardShortcuts[uuid] = {
-                'desc': trigger.BTTGestureNotes,
-                'binding': mod + key
+                'action': trigger.BTTGestureNotes,
+                'binding': (mod + key).split('').join(' ')
             }
         }
 
@@ -116,15 +117,15 @@
 
             const shortcut = shortcuts[uuid];
 
-            const descElement = document.createElement("div");
-            descElement.classList.add("desc");
-            descElement.textContent = shortcut.desc;
+            const actionElement = document.createElement("div");
+            actionElement.classList.add("action");
+            actionElement.textContent = shortcut.action;
 
             const bindingElement = document.createElement("div");
             bindingElement.classList.add("binding");
             bindingElement.textContent = shortcut.binding;
 
-            shortcutElement.appendChild(descElement);
+            shortcutElement.appendChild(actionElement);
             shortcutElement.appendChild(bindingElement);
 
             container.appendChild(shortcutElement);
