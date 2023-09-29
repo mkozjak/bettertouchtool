@@ -57,7 +57,7 @@
         });
 
         const allTriggersJSONArray = JSON.parse(allKeyboardShortcutsJSONString);
-        const allKeyboardShortcuts = [];
+        const allKeyboardShortcuts = {};
 
         for (const trigger of allTriggersJSONArray) {
             if (
@@ -72,9 +72,14 @@
                 trigger.BTTShortcutModifierKeys,
                 false
             );
-            const key = getKeycodeStringForKeycode(trigger.BTTShortcutKeyCode);
 
-            allKeyboardShortcuts.push(trigger.BTTGestureNotes + "\t" + mod + key);
+            const key = getKeycodeStringForKeycode(trigger.BTTShortcutKeyCode);
+            const uuid = trigger.BTTUUID;
+
+            allKeyboardShortcuts[uuid] = {
+                'desc': trigger.BTTGestureNotes,
+                'binding': mod + key
+            }
         }
 
         return allKeyboardShortcuts;
@@ -85,9 +90,9 @@
 
         let totalHeight = 0;
 
-        for (const shortcut of shortcuts) {
+        for (const uuid of Object.keys(shortcuts)) {
             const shortcutElement = document.createElement("p");
-            shortcutElement.textContent = shortcut;
+            shortcutElement.textContent = shortcuts[uuid].desc + ' ' + shortcuts[uuid].binding;
             container.appendChild(shortcutElement);
             totalHeight += shortcutElement.clientHeight;
         }
