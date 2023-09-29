@@ -6,11 +6,21 @@
     <title>Keyboard Shortcuts</title>
     <style>
       body {
-        font-family: Arial, sans-serif;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        font-size: 14px;
+        color: rgb(40, 40, 40);
+        display: flex; /* Center horizontally */
+        justify-content: center; /* Center horizontally */
+        align-items: center; /* Center vertically */
+        height: 100vh; /* Set the body height to 100% of the viewport height */
       }
       .container {
         column-count: 1; /* Start with one column */
         column-gap: 20px;
+        padding-top: 4px;
+        padding-bottom: 4px;
+        padding-left: 22px;
+        padding-right: 22px;
         max-height: 400px; /* Adjust the maximum height as needed */
         overflow-y: auto;
       }
@@ -20,6 +30,14 @@
     <div class="container" id="shortcutsContainer"></div>
 
     <script>
+      setTimeout(async () => {
+        // Fetch keyboard shortcuts for the currently focused application
+        const allKeyboardShortcuts = await getAppKeyboardShortcuts();
+
+        // Add the shortcuts to the container
+        addShortcutsToContainer(allKeyboardShortcuts);
+      }, 1000);
+
       async function getAppKeyboardShortcuts() {
         const bundleIdentifier = await get_string_variable({
           variable_name: "BTTActiveAppBundleIdentifier",
@@ -30,13 +48,15 @@
           trigger_app_bundle_identifier: bundleIdentifier,
         });
 
-        allTriggersJSONArray = JSON.parse(allKeyboardShortcutsJSONString);
+        const allTriggersJSONArray = JSON.parse(allKeyboardShortcutsJSONString);
         const allKeyboardShortcuts = [];
 
         for (const trigger of allTriggersJSONArray) {
           if (
             !trigger.BTTShortcutModifierKeys ||
-            trigger.BTTShortcutModifierKeys === -1
+            trigger.BTTShortcutModifierKeys === -1 ||
+            !trigger.BTTGestureNotes ||
+            trigger.BTTGestureNotes === ''
           )
             continue;
 
@@ -46,7 +66,7 @@
           );
           const key = getKeycodeStringForKeycode(trigger.BTTShortcutKeyCode);
 
-          allKeyboardShortcuts.push(mod + key);
+          allKeyboardShortcuts.push(trigger.BTTGestureNotes + "\t" + mod + key);
         }
 
         return allKeyboardShortcuts;
@@ -414,8 +434,6 @@
       }
 
       function getModifiersForBitmask(bitMask, leftRight) {
-        console.log("modifier", bitMask);
-
         if (bitMask === 0 || bitMask === -1) {
           return "";
         }
@@ -477,31 +495,14 @@
           modifierString += "fn";
         }
 
-        console.log("modifierstring", modifierString);
         return modifierString;
       }
-
-      setTimeout(async () => {
-        console.log("starting");
-        // Fetch keyboard shortcuts for the currently focused application
-        const allKeyboardShortcuts = await getAppKeyboardShortcuts();
-        console.log("got shortcuts", allKeyboardShortcuts);
-
-        // const allKeyboardShortcuts = ['⇧⌘H','⌥]','⌥[','⌘H','⌘L','⌃⌘H','⌃O','⌥[','⌥]','⌘Y'];
-
-        // Add the shortcuts to the container
-        addShortcutsToContainer(allKeyboardShortcuts);
-      }, 2000);
 
       async function BTTNotification(note) {
         setTimeout(async () => {
           let data = JSON.parse(note);
 
-          console.log(data.note, data.name);
-
           if (get_string_variable !== undefined) {
-            console.log(data.note, data.name);
-
             // example to get the currently active app, this works for any BTT variable you define:
             if (
               data.note == "BTTVariableChanged" &&
@@ -509,11 +510,9 @@
                 data.name == "BTTActiveWindowTitle")
             ) {
               const allKeyboardShortcuts = await getAppKeyboardShortcuts();
-              console.log("got shortcuts", allKeyboardShortcuts);
-
-              // const allKeyboardShortcuts = ['⇧⌘H','⌥]','⌥[','⌘H','⌘L','⌃⌘H','⌃O','⌥[','⌥]','⌘Y'];
               const container = document.getElementById("shortcutsContainer");
               container.innerHTML = '';
+
               // Add the shortcuts to the container
               addShortcutsToContainer(allKeyboardShortcuts);
             }
