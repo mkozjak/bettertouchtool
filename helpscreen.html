@@ -21,9 +21,9 @@
     }
 
     .container {
-        column-count: 1;
-        /* Start with one column */
-        column-gap: 20px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px; /* Adjust the space between columns */
         padding-top: 4px;
         padding-bottom: 4px;
         padding-left: 22px;
@@ -32,7 +32,29 @@
         /* Adjust the maximum height as needed */
         overflow-y: auto;
     }
-    </style>
+
+    /* Style for each shortcut item */
+    .shortcut {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        width: 100%;
+        /* Make each shortcut item take the full width of the container */
+    }
+
+    /* Style for the "Description" column */
+    .desc {
+        flex: 1;
+        /* Make the .desc element take all available space */
+        text-align: left; /* Align the text to the left in the "Description" column */
+    }
+
+    /* Style for the "Binding" column */
+    .binding {
+        /* No need to set flex property, as it will take the remaining space */
+        text-align: right; /* Align the text to the right in the "Binding" column */
+    }
+</style>
 </head>
 
 <body>
@@ -88,17 +110,24 @@
     function addShortcutsToContainer(shortcuts) {
         const container = document.getElementById("shortcutsContainer");
 
-        let totalHeight = 0;
-
         for (const uuid of Object.keys(shortcuts)) {
-            const shortcutElement = document.createElement("p");
-            shortcutElement.textContent = shortcuts[uuid].desc + ' ' + shortcuts[uuid].binding;
-            container.appendChild(shortcutElement);
-            totalHeight += shortcutElement.clientHeight;
-        }
+            const shortcutElement = document.createElement("div");
+            shortcutElement.classList.add("shortcut");
 
-        if (totalHeight > container.clientHeight) {
-            container.style.columnCount = 2; // If content exceeds height, use two columns
+            const shortcut = shortcuts[uuid];
+
+            const descElement = document.createElement("div");
+            descElement.classList.add("desc");
+            descElement.textContent = shortcut.desc;
+
+            const bindingElement = document.createElement("div");
+            bindingElement.classList.add("binding");
+            bindingElement.textContent = shortcut.binding;
+
+            shortcutElement.appendChild(descElement);
+            shortcutElement.appendChild(bindingElement);
+
+            container.appendChild(shortcutElement);
         }
     }
 
