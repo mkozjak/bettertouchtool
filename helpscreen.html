@@ -10,50 +10,34 @@
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
         font-size: 14px;
         color: rgb(30, 30, 30);
-        display: flex;
-        /* Center horizontally */
-        justify-content: center;
-        /* Center horizontally */
-        align-items: center;
-        /* Center vertically */
-        height: 100vh;
-        /* Set the body height to 100% of the viewport height */
+        margin: 0; /* Remove default margin to start from the top */
+        padding: 0; /* Remove default padding */
     }
 
     .container {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 20px; /* Adjust the space between columns */
-        padding-top: 4px;
-        padding-bottom: 4px;
-        padding-left: 22px;
-        padding-right: 22px;
-        max-height: 400px;
-        /* Adjust the maximum height as needed */
-        overflow-y: auto;
+        padding: 26px; /* Add padding to create space from the top */
     }
 
     /* Style for each shortcut item */
     .shortcut {
         display: flex;
-        flex-direction: row;
-        align-items: flex-start;
-        width: 100%;
-        /* Make each shortcut item take the full width of the container */
+        align-items: center;
+        justify-content: space-between;
+        height: 20px; /* Set a fixed height for each row */
+        margin-bottom: 10px; /* Add margin between rows if desired */
     }
 
-    /* Style for the "actionription" column */
+    /* Style for the "action" column */
     .action {
-        /* No need to set flex property */
-        text-align: left; /* Align the text to the left in the "actionription" column */
-        margin-right: auto; /* Push .action to the left */
+        flex-grow: 1; /* Allow it to grow and take up remaining horizontal space */
+        text-align: left;
     }
 
     /* Style for the "Binding" column */
     .binding {
-        /* No need to set flex property */
-        text-align: right; /* Align the text to the right in the "Binding" column */
-        margin-left: auto; /* Push .binding to the right */
+        flex-grow: 0; /* Do not allow it to grow */
+        text-align: right;
+        margin-left: 20px; /* Add some margin between columns if desired */
     }
     </style>
 </head>
@@ -100,6 +84,11 @@
             const uuid = trigger.BTTUUID;
 
             allKeyboardShortcuts[uuid] = {
+                'action': trigger.BTTGestureNotes,
+                'binding': (mod + key).split('').join(' ')
+            }
+
+            allKeyboardShortcuts[uuid + '2'] = {
                 'action': trigger.BTTGestureNotes,
                 'binding': (mod + key).split('').join(' ')
             }
