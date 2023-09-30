@@ -14,6 +14,15 @@
         padding: 0; /* Remove default padding */
     }
 
+    /* Hide the scrollbar for WebKit browsers (Safari, Chrome, Edge) */
+    body::-webkit-scrollbar {
+        width: 0.1em; /* Set the width of the scrollbar to a very small value */
+    }
+
+    body::-webkit-scrollbar-thumb {
+        background-color: transparent; /* Hide the thumb */
+    }
+
     /* Style for the title */
     .title {
         text-align: center;
