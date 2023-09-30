@@ -48,9 +48,12 @@
     }
 
     /* Style for the centered button */
-    .centered-button {
+    .page-button {
         display: block;
         margin: 0 auto; /* Center horizontally */
+        background-color: transparent;
+        border: none;
+        cursor: pointer;
     }
     </style>
 </head>
@@ -65,7 +68,7 @@
     <div class="container" id="trackpadShortcutsContainer" style="display: none;"></div>
 
     <!-- Button to switch between pages -->
-    <button id="switchPageButton" onclick="switchPage()" class="centered-button">Switch to Trackpad</button>
+    <button id="switchPageButton" onclick="switchPage()" class="page-button">Show Trackpad</button>
 
     <script>
     setTimeout(async () => {
@@ -221,7 +224,7 @@
             keyboardTitle.style.display = "none";
             trackpadContainer.style.display = "block";
             trackpadTitle.style.display = "block";
-            switchButton.textContent = "Switch to Keyboard";
+            switchButton.textContent = "Show Keyboard";
 
             const trackpadShortcuts = await getAppTrackpadShortcuts();
             addTrackpadShortcutsToContainer(trackpadShortcuts);
@@ -231,7 +234,7 @@
             trackpadTitle.style.display = "none";
             keyboardContainer.style.display = "block";
             keyboardTitle.style.display = "block";
-            switchButton.textContent = "Switch to Trackpad";
+            switchButton.textContent = "Show Trackpad";
         }
     }
 
