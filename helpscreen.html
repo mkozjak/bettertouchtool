@@ -46,19 +46,34 @@
         text-align: right;
         margin-left: 20px; /* Add some margin between columns if desired */
     }
+
+    /* Style for the centered button */
+    .centered-button {
+        display: block;
+        margin: 0 auto; /* Center horizontally */
+    }
     </style>
 </head>
 
 <body>
-    <div class="title">Keyboard</div>
-    <div class="container" id="shortcutsContainer"></div>
+    <!-- First Page - Keyboard Shortcuts -->
+    <div class="title" id="keyboardTitle">Keyboard</div>
+    <div class="container" id="keyboardShortcutsContainer"></div>
+
+    <!-- Second Page - Trackpad Shortcuts -->
+    <div class="title" style="display: none;" id="trackpadTitle">Trackpad</div>
+    <div class="container" id="trackpadShortcutsContainer" style="display: none;"></div>
+
+    <!-- Button to switch between pages -->
+    <button id="switchPageButton" onclick="switchPage()" class="centered-button">Switch to Trackpad</button>
+
     <script>
     setTimeout(async () => {
         // Fetch keyboard shortcuts for the currently focused application
         const allKeyboardShortcuts = await getAppKeyboardShortcuts();
 
         // Add shortcuts to the container
-        addShortcutsToContainer(allKeyboardShortcuts);
+        addKeyboardShortcutsToContainer(allKeyboardShortcuts);
     }, 1000);
 
     async function getAppKeyboardShortcuts() {
@@ -100,8 +115,8 @@
         return allKeyboardShortcuts;
     }
 
-    function addShortcutsToContainer(shortcuts) {
-        const container = document.getElementById("shortcutsContainer");
+    function addKeyboardShortcutsToContainer(shortcuts) {
+        const container = document.getElementById("keyboardShortcutsContainer");
 
         for (const uuid of Object.keys(shortcuts)) {
             const shortcutElement = document.createElement("div");
@@ -121,6 +136,102 @@
             shortcutElement.appendChild(bindingElement);
 
             container.appendChild(shortcutElement);
+        }
+    }
+
+    async function getAppTrackpadShortcuts() {
+        const bundleIdentifier = await get_string_variable({
+            variable_name: "BTTActiveAppBundleIdentifier",
+        });
+
+        const allTrackpadShortcutsJSONString = await get_triggers({
+            trigger_type: "BTTTriggerTypeTouchpadAll",
+            trigger_app_bundle_identifier: bundleIdentifier,
+        });
+
+        const allTriggersJSONArray = JSON.parse(allTrackpadShortcutsJSONString);
+        const allTrackpadShortcuts = {};
+
+        for (const trigger of allTriggersJSONArray) {
+            if (
+                trigger.BTTEnabled2 === 0 ||
+                !trigger.BTTGestureNotes ||
+                trigger.BTTGestureNotes === ''
+            )
+                continue;
+
+            const uuid = trigger.BTTUUID;
+            let mod = '';
+
+            // console.log(trigger.BTTTriggerTypeDescription, trigger.BTTGestureNotes)
+            if (trigger.BTTTriggerTypeDescription.indexOf('(modifier key needed)') !== -1) {
+                mod = getModifiersForBitmask(
+                    trigger.BTTRequiredModifierKeys,
+                    false
+                );
+
+                trigger.BTTTriggerTypeDescription =
+                    trigger.BTTTriggerTypeDescription.replace(' (modifier key needed)', '');
+            }
+
+            allTrackpadShortcuts[uuid] = {
+                'action': trigger.BTTGestureNotes,
+                'binding': (mod + ' ' + trigger.BTTTriggerTypeDescription)
+            }
+        }
+
+        return allTrackpadShortcuts;
+    }
+
+    function addTrackpadShortcutsToContainer(shortcuts) {
+        const container = document.getElementById("trackpadShortcutsContainer");
+
+        for (const uuid of Object.keys(shortcuts)) {
+            const shortcutElement = document.createElement("div");
+            shortcutElement.classList.add("shortcut");
+
+            const shortcut = shortcuts[uuid];
+
+            const actionElement = document.createElement("div");
+            actionElement.classList.add("action");
+            actionElement.textContent = shortcut.action;
+
+            const bindingElement = document.createElement("div");
+            bindingElement.classList.add("binding");
+            bindingElement.textContent = shortcut.binding;
+
+            shortcutElement.appendChild(actionElement);
+            shortcutElement.appendChild(bindingElement);
+
+            container.appendChild(shortcutElement);
+        }
+    }
+
+    // Function to switch between pages
+    async function switchPage() {
+        const keyboardContainer = document.getElementById("keyboardShortcutsContainer");
+        const trackpadContainer = document.getElementById("trackpadShortcutsContainer");
+        const keyboardTitle = document.getElementById("keyboardTitle");
+        const trackpadTitle = document.getElementById("trackpadTitle");
+        const switchButton = document.getElementById("switchPageButton");
+
+        if (keyboardContainer.style.display === "block") {
+            // Switch to Trackpad page
+            keyboardContainer.style.display = "none";
+            keyboardTitle.style.display = "none";
+            trackpadContainer.style.display = "block";
+            trackpadTitle.style.display = "block";
+            switchButton.textContent = "Switch to Keyboard";
+
+            const trackpadShortcuts = await getAppTrackpadShortcuts();
+            addTrackpadShortcutsToContainer(trackpadShortcuts);
+        } else {
+            // Switch to Keyboard page
+            trackpadContainer.style.display = "none";
+            trackpadTitle.style.display = "none";
+            keyboardContainer.style.display = "block";
+            keyboardTitle.style.display = "block";
+            switchButton.textContent = "Switch to Trackpad";
         }
     }
 
@@ -658,11 +769,15 @@
                         data.name == "BTTActiveWindowTitle")
                 ) {
                     const allKeyboardShortcuts = await getAppKeyboardShortcuts();
-                    const container = document.getElementById("shortcutsContainer");
-                    container.innerHTML = '';
+                    const allTrackpadShortcuts = await getAppTrackpadShortcuts();
+                    const keyboardContainer = document.getElementById("keyboardShortcutsContainer");
+                    keyboardContainer.innerHTML = '';
+                    const trackpadContainer = document.getElementById("trackpadShortcutsContainer");
+                    trackpadContainer.innerHTML = '';
 
                     // Add the shortcuts to the container
-                    addShortcutsToContainer(allKeyboardShortcuts);
+                    addKeyboardShortcutsToContainer(allKeyboardShortcuts);
+                    addTrackpadShortcutsToContainer(allTrackpadShortcuts);
                 }
             }
         }, 200);
