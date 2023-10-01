@@ -175,8 +175,7 @@
             const uuid = trigger.BTTUUID;
             let mod = '';
 
-            // console.log(trigger.BTTTriggerTypeDescription, trigger.BTTGestureNotes)
-            if (trigger.BTTTriggerTypeDescription.indexOf('(modifier key needed)') !== -1) {
+            if (trigger.BTTRequiredModifierKeys) {
                 mod = getModifiersForBitmask(
                     trigger.BTTRequiredModifierKeys,
                     false
