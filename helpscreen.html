@@ -82,20 +82,21 @@
     <script>
     setTimeout(async () => {
         // Fetch keyboard shortcuts for the currently focused application
-        const allKeyboardShortcuts = await getAppKeyboardShortcuts();
-
-        // Add shortcuts to the container
-        addKeyboardShortcutsToContainer(allKeyboardShortcuts);
-    }, 1000);
-
-    async function getAppKeyboardShortcuts() {
         const bundleIdentifier = await get_string_variable({
             variable_name: "BTTActiveAppBundleIdentifier",
         });
 
+        const appKeyboardShortcuts = await getAppKeyboardShortcuts(bundleIdentifier);
+        const globalKeyboardShortcuts = await getAppKeyboardShortcuts("BT.G")
+
+        // Add shortcuts to the container
+        addKeyboardShortcutsToContainer({ ...appKeyboardShortcuts, ...globalKeyboardShortcuts });
+    }, 1000);
+
+    async function getAppKeyboardShortcuts(id) {
         const allKeyboardShortcutsJSONString = await get_triggers({
             trigger_type: "BTTTriggerTypeKeyboardShortcut",
-            trigger_app_bundle_identifier: bundleIdentifier,
+            trigger_app_bundle_identifier: id,
         });
 
         const allTriggersJSONArray = JSON.parse(allKeyboardShortcutsJSONString);
@@ -151,14 +152,14 @@
         }
     }
 
-    async function getAppTrackpadShortcuts() {
+    async function getAppTrackpadShortcuts(id) {
         const bundleIdentifier = await get_string_variable({
             variable_name: "BTTActiveAppBundleIdentifier",
         });
 
         const allTrackpadShortcutsJSONString = await get_triggers({
             trigger_type: "BTTTriggerTypeTouchpadAll",
-            trigger_app_bundle_identifier: bundleIdentifier,
+            trigger_app_bundle_identifier: id,
         });
 
         const allTriggersJSONArray = JSON.parse(allTrackpadShortcutsJSONString);
@@ -234,8 +235,13 @@
             trackpadTitle.style.display = "block";
             switchButton.textContent = "Show Keyboard";
 
-            const trackpadShortcuts = await getAppTrackpadShortcuts();
-            addTrackpadShortcutsToContainer(trackpadShortcuts);
+            const bundleIdentifier = await get_string_variable({
+                variable_name: "BTTActiveAppBundleIdentifier",
+            });
+
+            const trackpadAppShortcuts = await getAppTrackpadShortcuts(bundleIdentifier);
+            const trackpadGlobalShortcuts = await getAppTrackpadShortcuts("BT.G");
+            addTrackpadShortcutsToContainer({ ...trackpadAppShortcuts, ...trackpadGlobalShortcuts });
         } else {
             // Switch to Keyboard page
             trackpadContainer.style.display = "none";
@@ -779,16 +785,22 @@
                     (data.name == "BTTActiveAppBundleIdentifier" ||
                         data.name == "BTTActiveWindowTitle")
                 ) {
-                    const allKeyboardShortcuts = await getAppKeyboardShortcuts();
-                    const allTrackpadShortcuts = await getAppTrackpadShortcuts();
+                    const bundleIdentifier = await get_string_variable({
+                        variable_name: "BTTActiveAppBundleIdentifier",
+                    });
+
+                    const appKeyboardShortcuts = await getAppKeyboardShortcuts(bundleIdentifier);
+                    const globalKeyboardShortcuts = await getAppKeyboardShortcuts("BT.G")
+                    const appTrackpadShortcuts = await getAppTrackpadShortcuts(bundleIdentifier);
+                    const globalTrackpadShortcuts = await getAppTrackpadShortcuts("BT.G");
                     const keyboardContainer = document.getElementById("keyboardShortcutsContainer");
                     keyboardContainer.innerHTML = '';
                     const trackpadContainer = document.getElementById("trackpadShortcutsContainer");
                     trackpadContainer.innerHTML = '';
 
                     // Add the shortcuts to the container
-                    addKeyboardShortcutsToContainer(allKeyboardShortcuts);
-                    addTrackpadShortcutsToContainer(allTrackpadShortcuts);
+                    addKeyboardShortcutsToContainer({ ...appKeyboardShortcuts, ...globalKeyboardShortcuts });
+                    addTrackpadShortcutsToContainer({ ...appTrackpadShortcuts, ...globalTrackpadShortcuts });
                 }
             }
         }, 200);
