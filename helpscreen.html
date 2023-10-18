@@ -241,6 +241,10 @@
 
             const trackpadAppShortcuts = await getAppTrackpadShortcuts(bundleIdentifier);
             const trackpadGlobalShortcuts = await getAppTrackpadShortcuts("BT.G");
+
+            // Clear the trackpad container
+            trackpadContainer.innerHTML = "";
+
             addTrackpadShortcutsToContainer({ ...trackpadAppShortcuts, ...trackpadGlobalShortcuts });
         } else {
             // Switch to Keyboard page
