@@ -83,6 +83,13 @@
                 color: #fff; /* Dark mode text color */
             }
         }
+
+        .separator {
+            width: 20%;
+            opacity: 0.3;
+            margin-top: 15px;
+            margin-bottom: 15px;
+        }
     </style>
 </head>
 
@@ -140,7 +147,8 @@
 
                 allKeyboardShortcuts[uuid] = {
                     "action": trigger.BTTGestureNotes,
-                    "binding": (mod + key).split("").join(" ")
+                    "binding": (mod + key).split("").join(" "),
+                    "context": id === "BT.G" ? "global" : "app"
                 }
             }
 
@@ -149,12 +157,21 @@
 
         function addKeyboardShortcutsToContainer(shortcuts) {
             const container = document.getElementById("keyboardShortcutsContainer");
+            let separatorAdded = false;
 
             for (const uuid of Object.keys(shortcuts)) {
+                const shortcut = shortcuts[uuid];
+
+                if (separatorAdded === false && shortcut.context === "global") {
+                    const separator = document.createElement("hr");
+                    separator.classList.add("separator");
+                    container.appendChild(separator);
+                    separatorAdded = true;
+                    continue;
+                }
+
                 const shortcutElement = document.createElement("div");
                 shortcutElement.classList.add("shortcut");
-
-                const shortcut = shortcuts[uuid];
 
                 const actionElement = document.createElement("div");
                 actionElement.classList.add("action");
@@ -207,7 +224,8 @@
 
                 allTrackpadShortcuts[uuid] = {
                     "action": trigger.BTTGestureNotes,
-                    "binding": (mod + " " + trigger.BTTTriggerTypeDescription)
+                    "binding": (mod + " " + trigger.BTTTriggerTypeDescription),
+                    "context": id === "BT.G" ? "global" : "app"
                 }
             }
 
@@ -216,12 +234,21 @@
 
         function addTrackpadShortcutsToContainer(shortcuts) {
             const container = document.getElementById("trackpadShortcutsContainer");
+            let separatorAdded = false;
 
             for (const uuid of Object.keys(shortcuts)) {
+                const shortcut = shortcuts[uuid];
+
+                if (separatorAdded === false && shortcut.context === "global") {
+                    const separator = document.createElement("hr");
+                    separator.classList.add("separator");
+                    container.appendChild(separator);
+                    separatorAdded = true;
+                    continue;
+                }
+
                 const shortcutElement = document.createElement("div");
                 shortcutElement.classList.add("shortcut");
-
-                const shortcut = shortcuts[uuid];
 
                 const actionElement = document.createElement("div");
                 actionElement.classList.add("action");
