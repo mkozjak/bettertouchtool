@@ -18,6 +18,13 @@
         overflow: hidden;
     }
 
+    @media (prefers-color-scheme: dark) {
+        body {
+            background-color: rgba(0, 0, 0, 0.4); /* Dark background color */
+            color: #fff; /* White text color */
+        }
+    }
+
     @supports (-webkit-appearance:none) {
         ::-webkit-scrollbar {
             width: 0;  /* Remove scrollbar space */
