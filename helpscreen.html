@@ -6,79 +6,79 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Keyboard Shortcuts</title>
     <style>
-    body {
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-        font-size: 14px;
-        color: rgb(30, 30, 30);
-        margin: 0; /* Remove default margin to start from the top */
-        padding: 0; /* Remove default padding */
-        display: flex;
-        flex-direction: column;
-        height: 100vh;
-        overflow: hidden;
-    }
-
-    @media (prefers-color-scheme: dark) {
         body {
-            background-color: rgba(0, 0, 0, 0.4); /* Dark background color */
-            color: #fff; /* White text color */
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            font-size: 14px;
+            color: rgb(30, 30, 30);
+            margin: 0; /* Remove default margin to start from the top */
+            padding: 0; /* Remove default padding */
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
         }
-    }
 
-    @supports (-webkit-appearance:none) {
-        ::-webkit-scrollbar {
-            width: 0;  /* Remove scrollbar space */
-            background: transparent;  /* Optional: just make scrollbar invisible */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: rgba(0, 0, 0, 0.4); /* Dark background color */
+                color: #fff; /* White text color */
+            }
         }
-    }
 
-    /* Style for the title */
-    .title {
-        text-align: center;
-        font-size: 18px;
-        margin-top: 20px;
-        margin-bottom: 12px;
-    }
+        @supports (-webkit-appearance:none) {
+            ::-webkit-scrollbar {
+                width: 0;  /* Remove scrollbar space */
+                background: transparent;  /* Optional: just make scrollbar invisible */
+            }
+        }
 
-    .container {
-        padding: 6px 20px 6px 20px;
-        overflow-y: auto; /* Add scroll to this container */
-        flex-grow: 1; /* Allow it to grow and take up remaining vertical space */
-    }
+        /* Style for the title */
+        .title {
+            text-align: center;
+            font-size: 18px;
+            margin-top: 20px;
+            margin-bottom: 12px;
+        }
 
-    /* Style for each shortcut item */
-    .shortcut {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        height: 20px; /* Set a fixed height for each row */
-        margin-bottom: 10px; /* Add margin between rows if desired */
-    }
+        .container {
+            padding: 6px 20px 6px 20px;
+            overflow-y: auto; /* Add scroll to this container */
+            flex-grow: 1; /* Allow it to grow and take up remaining vertical space */
+        }
 
-    /* Style for the "action" column */
-    .action {
-        flex-grow: 1; /* Allow it to grow and take up remaining horizontal space */
-        text-align: left;
-    }
+        /* Style for each shortcut item */
+        .shortcut {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 20px; /* Set a fixed height for each row */
+            margin-bottom: 10px; /* Add margin between rows if desired */
+        }
 
-    /* Style for the "Binding" column */
-    .binding {
-        flex-grow: 0; /* Do not allow it to grow */
-        text-align: right;
-        margin-left: 20px; /* Add some margin between columns if desired */
-    }
+        /* Style for the "action" column */
+        .action {
+            flex-grow: 1; /* Allow it to grow and take up remaining horizontal space */
+            text-align: left;
+        }
 
-    /* Style for the centered button */
-    .page-button {
-        display: block;
-        margin: 0 auto; /* Center horizontally */
-        margin-top: 6px;
-        margin-bottom: 10px;
-        background-color: transparent;
-        border: none;
-        cursor: pointer;
-        width: 100%;
-    }
+        /* Style for the "Binding" column */
+        .binding {
+            flex-grow: 0; /* Do not allow it to grow */
+            text-align: right;
+            margin-left: 20px; /* Add some margin between columns if desired */
+        }
+
+        /* Style for the centered button */
+        .page-button {
+            display: block;
+            margin: 0 auto; /* Center horizontally */
+            margin-top: 6px;
+            margin-bottom: 10px;
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+        }
     </style>
 </head>
 
