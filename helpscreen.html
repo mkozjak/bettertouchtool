@@ -99,735 +99,735 @@
     <button id="switchPageButton" onclick="switchPage()" class="page-button">Show Trackpad</button>
 
     <script>
-    setTimeout(async () => {
-        // Fetch keyboard shortcuts for the currently focused application
-        const bundleIdentifier = await get_string_variable({
-            variable_name: "BTTActiveAppBundleIdentifier",
-        });
-
-        const appKeyboardShortcuts = await getAppKeyboardShortcuts(bundleIdentifier);
-        const globalKeyboardShortcuts = await getAppKeyboardShortcuts("BT.G")
-
-        // Add shortcuts to the container
-        addKeyboardShortcutsToContainer({ ...appKeyboardShortcuts, ...globalKeyboardShortcuts });
-    }, 1000);
-
-    async function getAppKeyboardShortcuts(id) {
-        const allKeyboardShortcutsJSONString = await get_triggers({
-            trigger_type: "BTTTriggerTypeKeyboardShortcut",
-            trigger_app_bundle_identifier: id,
-        });
-
-        const allTriggersJSONArray = JSON.parse(allKeyboardShortcutsJSONString);
-        const allKeyboardShortcuts = {};
-
-        for (const trigger of allTriggersJSONArray) {
-            if (
-                !trigger.BTTShortcutModifierKeys ||
-                trigger.BTTShortcutModifierKeys === -1 ||
-                !trigger.BTTGestureNotes ||
-                trigger.BTTGestureNotes === ""
-            )
-                continue;
-
-            const mod = getModifiersForBitmask(
-                trigger.BTTShortcutModifierKeys,
-                false
-            );
-
-            const key = getKeycodeStringForKeycode(trigger.BTTShortcutKeyCode);
-            const uuid = trigger.BTTUUID;
-
-            allKeyboardShortcuts[uuid] = {
-                "action": trigger.BTTGestureNotes,
-                "binding": (mod + key).split("").join(" ")
-            }
-        }
-
-        return allKeyboardShortcuts;
-    }
-
-    function addKeyboardShortcutsToContainer(shortcuts) {
-        const container = document.getElementById("keyboardShortcutsContainer");
-
-        for (const uuid of Object.keys(shortcuts)) {
-            const shortcutElement = document.createElement("div");
-            shortcutElement.classList.add("shortcut");
-
-            const shortcut = shortcuts[uuid];
-
-            const actionElement = document.createElement("div");
-            actionElement.classList.add("action");
-            actionElement.textContent = shortcut.action;
-
-            const bindingElement = document.createElement("div");
-            bindingElement.classList.add("binding");
-            bindingElement.textContent = shortcut.binding;
-
-            shortcutElement.appendChild(actionElement);
-            shortcutElement.appendChild(bindingElement);
-
-            container.appendChild(shortcutElement);
-        }
-    }
-
-    async function getAppTrackpadShortcuts(id) {
-        const bundleIdentifier = await get_string_variable({
-            variable_name: "BTTActiveAppBundleIdentifier",
-        });
-
-        const allTrackpadShortcutsJSONString = await get_triggers({
-            trigger_type: "BTTTriggerTypeTouchpadAll",
-            trigger_app_bundle_identifier: id,
-        });
-
-        const allTriggersJSONArray = JSON.parse(allTrackpadShortcutsJSONString);
-        const allTrackpadShortcuts = {};
-
-        for (const trigger of allTriggersJSONArray) {
-            if (
-                trigger.BTTEnabled2 === 0 ||
-                !trigger.BTTGestureNotes ||
-                trigger.BTTGestureNotes === ""
-            )
-                continue;
-
-            const uuid = trigger.BTTUUID;
-            let mod = "";
-
-            if (trigger.BTTRequiredModifierKeys) {
-                mod = getModifiersForBitmask(
-                    trigger.BTTRequiredModifierKeys,
-                    false
-                );
-
-                trigger.BTTTriggerTypeDescription =
-                    trigger.BTTTriggerTypeDescription.replace(" (modifier key needed)", "");
-            }
-
-            allTrackpadShortcuts[uuid] = {
-                "action": trigger.BTTGestureNotes,
-                "binding": (mod + " " + trigger.BTTTriggerTypeDescription)
-            }
-        }
-
-        return allTrackpadShortcuts;
-    }
-
-    function addTrackpadShortcutsToContainer(shortcuts) {
-        const container = document.getElementById("trackpadShortcutsContainer");
-
-        for (const uuid of Object.keys(shortcuts)) {
-            const shortcutElement = document.createElement("div");
-            shortcutElement.classList.add("shortcut");
-
-            const shortcut = shortcuts[uuid];
-
-            const actionElement = document.createElement("div");
-            actionElement.classList.add("action");
-            actionElement.textContent = shortcut.action;
-
-            const bindingElement = document.createElement("div");
-            bindingElement.classList.add("binding");
-            bindingElement.textContent = shortcut.binding;
-
-            shortcutElement.appendChild(actionElement);
-            shortcutElement.appendChild(bindingElement);
-
-            container.appendChild(shortcutElement);
-        }
-    }
-
-    // Function to switch between pages
-    async function switchPage() {
-        const keyboardContainer = document.getElementById("keyboardShortcutsContainer");
-        const trackpadContainer = document.getElementById("trackpadShortcutsContainer");
-        const keyboardTitle = document.getElementById("keyboardTitle");
-        const trackpadTitle = document.getElementById("trackpadTitle");
-        const switchButton = document.getElementById("switchPageButton");
-
-        if (keyboardContainer.style.display === "block") {
-            // Switch to Trackpad page
-            keyboardContainer.style.display = "none";
-            keyboardTitle.style.display = "none";
-            trackpadContainer.style.display = "block";
-            trackpadTitle.style.display = "block";
-            switchButton.textContent = "Show Keyboard";
-
+        setTimeout(async () => {
+            // Fetch keyboard shortcuts for the currently focused application
             const bundleIdentifier = await get_string_variable({
                 variable_name: "BTTActiveAppBundleIdentifier",
             });
 
-            const trackpadAppShortcuts = await getAppTrackpadShortcuts(bundleIdentifier);
-            const trackpadGlobalShortcuts = await getAppTrackpadShortcuts("BT.G");
+            const appKeyboardShortcuts = await getAppKeyboardShortcuts(bundleIdentifier);
+            const globalKeyboardShortcuts = await getAppKeyboardShortcuts("BT.G")
 
-            // Clear the trackpad container
-            trackpadContainer.innerHTML = "";
+            // Add shortcuts to the container
+            addKeyboardShortcutsToContainer({ ...appKeyboardShortcuts, ...globalKeyboardShortcuts });
+        }, 1000);
 
-            addTrackpadShortcutsToContainer({ ...trackpadAppShortcuts, ...trackpadGlobalShortcuts });
-        } else {
-            // Switch to Keyboard page
-            trackpadContainer.style.display = "none";
-            trackpadTitle.style.display = "none";
-            keyboardContainer.style.display = "block";
-            keyboardTitle.style.display = "block";
-            switchButton.textContent = "Show Trackpad";
-        }
-    }
+        async function getAppKeyboardShortcuts(id) {
+            const allKeyboardShortcutsJSONString = await get_triggers({
+                trigger_type: "BTTTriggerTypeKeyboardShortcut",
+                trigger_app_bundle_identifier: id,
+            });
 
-    function getKeycodeStringForKeycode(keycode) {
-        switch (keycode) {
-            case 0x00:
-                {
-                    return "A";
-                }
-            case 0x01:
-                {
-                    return "S";
-                }
-            case 0x02:
-                {
-                    return "D";
-                }
-            case 0x03:
-                {
-                    return "F";
-                }
-            case 0x04:
-                {
-                    return "H";
-                }
-            case 0x05:
-                {
-                    return "G";
-                }
-            case 0x06:
-                {
-                    return "Z";
-                }
-            case 0x07:
-                {
-                    return "X";
-                }
-            case 0x08:
-                {
-                    return "C";
-                }
-            case 0x09:
-                {
-                    return "V";
-                }
-            case 0x0b:
-                {
-                    return "B";
-                }
-            case 0x0c:
-                {
-                    return "Q";
-                }
-            case 0x0d:
-                {
-                    return "W";
-                }
-            case 0x0e:
-                {
-                    return "E";
-                }
-            case 0x0f:
-                {
-                    return "R";
-                }
-            case 0x10:
-                {
-                    return "Y";
-                }
-            case 0x11:
-                {
-                    return "T";
-                }
-            case 0x12:
-                {
-                    return "1";
-                }
-            case 0x13:
-                {
-                    return "2";
-                }
-            case 0x14:
-                {
-                    return "3";
-                }
-            case 0x15:
-                {
-                    return "4";
-                }
-            case 0x16:
-                {
-                    return "6";
-                }
-            case 0x17:
-                {
-                    return "5";
-                }
-            case 0x18:
-                {
-                    return "=";
-                }
-            case 0x19:
-                {
-                    return "9";
-                }
-            case 0x1a:
-                {
-                    return "7";
-                }
-            case 0x1b:
-                {
-                    return "-";
-                }
-            case 0x1c:
-                {
-                    return "8";
-                }
-            case 0x1d:
-                {
-                    return "0";
-                }
-            case 0x1e:
-                {
-                    return "]";
-                }
-            case 0x1f:
-                {
-                    return "O";
-                }
-            case 0x20:
-                {
-                    return "U";
-                }
-            case 0x21:
-                {
-                    return "[";
-                }
-            case 0x22:
-                {
-                    return "I";
-                }
-            case 0x23:
-                {
-                    return "P";
-                }
-            case 0x25:
-                {
-                    return "L";
-                }
-            case 0x26:
-                {
-                    return "J";
-                }
-            case 0x27:
-                {
-                    return '"';
-                }
-            case 0x28:
-                {
-                    return "K";
-                }
-            case 0x29:
-                {
-                    return ";";
-                }
-            case 0x2a:
-                {
-                    return "\\";
-                }
-            case 0x2b:
-                {
-                    return ",";
-                }
-            case 0x2c:
-                {
-                    return "/";
-                }
-            case 0x2d:
-                {
-                    return "N";
-                }
-            case 0x2e:
-                {
-                    return "M";
-                }
-            case 0x2f:
-                {
-                    return ".";
-                }
-            case 0x32:
-                {
-                    return "`";
-                }
-            case 0x41:
-                {
-                    return ".";
-                }
-            case 0x43:
-                {
-                    return "*";
-                }
-            case 0x45:
-                {
-                    return "+";
-                }
-            case 0x47:
-                {
-                    return "?";
-                }
-            case 0x4b:
-                {
-                    return "%";
-                }
-            case 0x4c:
-                {
-                    return "return";
-                }
-            case 0x4e:
-                {
-                    return "-";
-                }
-            case 0x51:
-                {
-                    return "=";
-                }
-            case 0x52:
-                {
-                    return "0";
-                }
-            case 0x53:
-                {
-                    return "1";
-                }
-            case 0x54:
-                {
-                    return "2";
-                }
-            case 0x55:
-                {
-                    return "3";
-                }
-            case 0x56:
-                {
-                    return "4";
-                }
-            case 0x57:
-                {
-                    return "5";
-                }
-            case 0x58:
-                {
-                    return "6";
-                }
-            case 0x59:
-                {
-                    return "7";
-                }
-            case 0x5b:
-                {
-                    return "8";
-                }
-            case 0x5c:
-                {
-                    return "9";
-                }
-            case 0x24:
-                {
-                    return "Return";
-                }
-            case 0x30:
-                {
-                    return "Tab";
-                }
-            case 0x31:
-                {
-                    return "Space";
-                }
-            case 0x33:
-                {
-                    return "Delete";
-                }
-            case 0x35:
-                {
-                    return "Escape";
-                }
-            case 0x37:
-                {
-                    return "Command";
-                }
-            case 0x38:
-                {
-                    return "Shift";
-                }
-            case 0x39:
-                {
-                    return "CapsLock";
-                }
-            case 0x3a:
-                {
-                    return "Option";
-                }
-            case 0x3b:
-                {
-                    return "Control";
-                }
-            case 0x3c:
-                {
-                    return "RightShift";
-                }
-            case 0x3d:
-                {
-                    return "RightOption";
-                }
-            case 0x3e:
-                {
-                    return "RightControl";
-                }
-            case 0x3f:
-                {
-                    return "Function";
-                }
-            case 0x40:
-                {
-                    return "F17";
-                }
-            case 0x48:
-                {
-                    return "VolumeUp";
-                }
-            case 0x49:
-                {
-                    return "VolumeDown";
-                }
-            case 0x4a:
-                {
-                    return "Mute";
-                }
-            case 0x4f:
-                {
-                    return "F18";
-                }
-            case 0x50:
-                {
-                    return "F19";
-                }
-            case 0x5a:
-                {
-                    return "F20";
-                }
-            case 0x60:
-                {
-                    return "F5";
-                }
-            case 0x61:
-                {
-                    return "F6";
-                }
-            case 0x62:
-                {
-                    return "F7";
-                }
-            case 0x63:
-                {
-                    return "F3";
-                }
-            case 0x64:
-                {
-                    return "F8";
-                }
-            case 0x65:
-                {
-                    return "F9";
-                }
-            case 0x67:
-                {
-                    return "F11";
-                }
-            case 0x69:
-                {
-                    return "F13";
-                }
-            case 0x6a:
-                {
-                    return "F16";
-                }
-            case 0x6b:
-                {
-                    return "F14";
-                }
-            case 0x6d:
-                {
-                    return "F10";
-                }
-            case 0x6f:
-                {
-                    return "F12";
-                }
-            case 0x71:
-                {
-                    return "F15";
-                }
-            case 0x72:
-                {
-                    return "Help";
-                }
-            case 0x73:
-                {
-                    return "Home";
-                }
-            case 0x74:
-                {
-                    return "PageUp";
-                }
-            case 0x75:
-                {
-                    return "ForwardDelete";
-                }
-            case 0x76:
-                {
-                    return "F4";
-                }
-            case 0x77:
-                {
-                    return "End";
-                }
-            case 0x78:
-                {
-                    return "F2";
-                }
-            case 0x79:
-                {
-                    return "PageDown";
-                }
-            case 0x7a:
-                {
-                    return "F1";
-                }
-            case 0x7b:
-                {
-                    return "LeftArrow";
-                }
-            case 0x7c:
-                {
-                    return "RightArrow";
-                }
-            case 0x7d:
-                {
-                    return "DownArrow";
-                }
-            case 0x7e:
-                {
-                    return "UpArrow";
-                }
-            default:
-                {
-                    return "??";
-                }
-        }
-    }
+            const allTriggersJSONArray = JSON.parse(allKeyboardShortcutsJSONString);
+            const allKeyboardShortcuts = {};
 
-    function getModifiersForBitmask(bitMask, leftRight) {
-        if (bitMask === 0 || bitMask === -1) {
-            return "";
-        }
-        var modifierString = "";
-
-        if (leftRight && (bitMask & 0x00000001 || bitMask & 0x00002000)) {
-            if (bitMask & 0x00000001) {
-                modifierString += "⌃(L)";
-            }
-            if (bitMask & 0x00002000) {
-                modifierString += "⌃(R)";
-            }
-        } else {
-            if (bitMask & (1 << 18)) {
-                modifierString += "⌃";
-            }
-        }
-
-        if (leftRight && (bitMask & 0x00000002 || bitMask & 0x00000004)) {
-            if (bitMask & 0x00000002) {
-                modifierString += "⇧(L)";
-            }
-            if (bitMask & 0x00000004) {
-                modifierString += "⇧(R)";
-            }
-        } else {
-            if (bitMask & (1 << 17)) {
-                modifierString += "⇧";
-            }
-        }
-
-        if (leftRight && (bitMask & 0x00000010 || bitMask & 0x00000008)) {
-            if (bitMask & 0x00000010) {
-                modifierString += "⌘(R)";
-            }
-            if (bitMask & 0x00000008) {
-                modifierString += "⌘(L)";
-            }
-        } else {
-            if (bitMask & (1 << 20)) {
-                modifierString += "⌘";
-            }
-        }
-
-        if (leftRight && (bitMask & 0x00000020 || bitMask & 0x00000040)) {
-            if (bitMask & 0x00000020) {
-                modifierString += "⌥(L)";
-            }
-            if (bitMask & 0x00000040) {
-                modifierString += "⌥(R)";
-            }
-        } else {
-            if (bitMask & (1 << 19)) {
-                modifierString += "⌥";
-            }
-        }
-
-        if (bitMask & (1 << 23)) {
-            modifierString += "fn";
-        }
-
-        return modifierString;
-    }
-
-    async function BTTNotification(note) {
-        setTimeout(async () => {
-            let data = JSON.parse(note);
-
-            if (get_string_variable !== undefined) {
-                // example to get the currently active app, this works for any BTT variable you define:
+            for (const trigger of allTriggersJSONArray) {
                 if (
-                    data.note == "BTTVariableChanged" &&
-                    (data.name == "BTTActiveAppBundleIdentifier" ||
-                        data.name == "BTTActiveWindowTitle")
-                ) {
-                    const bundleIdentifier = await get_string_variable({
-                        variable_name: "BTTActiveAppBundleIdentifier",
-                    });
+                    !trigger.BTTShortcutModifierKeys ||
+                    trigger.BTTShortcutModifierKeys === -1 ||
+                    !trigger.BTTGestureNotes ||
+                    trigger.BTTGestureNotes === ""
+                )
+                    continue;
 
-                    const appKeyboardShortcuts = await getAppKeyboardShortcuts(bundleIdentifier);
-                    const globalKeyboardShortcuts = await getAppKeyboardShortcuts("BT.G")
-                    const appTrackpadShortcuts = await getAppTrackpadShortcuts(bundleIdentifier);
-                    const globalTrackpadShortcuts = await getAppTrackpadShortcuts("BT.G");
-                    const keyboardContainer = document.getElementById("keyboardShortcutsContainer");
-                    keyboardContainer.innerHTML = "";
-                    const trackpadContainer = document.getElementById("trackpadShortcutsContainer");
-                    trackpadContainer.innerHTML = "";
+                const mod = getModifiersForBitmask(
+                    trigger.BTTShortcutModifierKeys,
+                    false
+                );
 
-                    // Add the shortcuts to the container
-                    addKeyboardShortcutsToContainer({ ...appKeyboardShortcuts, ...globalKeyboardShortcuts });
-                    addTrackpadShortcutsToContainer({ ...appTrackpadShortcuts, ...globalTrackpadShortcuts });
+                const key = getKeycodeStringForKeycode(trigger.BTTShortcutKeyCode);
+                const uuid = trigger.BTTUUID;
+
+                allKeyboardShortcuts[uuid] = {
+                    "action": trigger.BTTGestureNotes,
+                    "binding": (mod + key).split("").join(" ")
                 }
             }
-        }, 200);
-    }
+
+            return allKeyboardShortcuts;
+        }
+
+        function addKeyboardShortcutsToContainer(shortcuts) {
+            const container = document.getElementById("keyboardShortcutsContainer");
+
+            for (const uuid of Object.keys(shortcuts)) {
+                const shortcutElement = document.createElement("div");
+                shortcutElement.classList.add("shortcut");
+
+                const shortcut = shortcuts[uuid];
+
+                const actionElement = document.createElement("div");
+                actionElement.classList.add("action");
+                actionElement.textContent = shortcut.action;
+
+                const bindingElement = document.createElement("div");
+                bindingElement.classList.add("binding");
+                bindingElement.textContent = shortcut.binding;
+
+                shortcutElement.appendChild(actionElement);
+                shortcutElement.appendChild(bindingElement);
+
+                container.appendChild(shortcutElement);
+            }
+        }
+
+        async function getAppTrackpadShortcuts(id) {
+            const bundleIdentifier = await get_string_variable({
+                variable_name: "BTTActiveAppBundleIdentifier",
+            });
+
+            const allTrackpadShortcutsJSONString = await get_triggers({
+                trigger_type: "BTTTriggerTypeTouchpadAll",
+                trigger_app_bundle_identifier: id,
+            });
+
+            const allTriggersJSONArray = JSON.parse(allTrackpadShortcutsJSONString);
+            const allTrackpadShortcuts = {};
+
+            for (const trigger of allTriggersJSONArray) {
+                if (
+                    trigger.BTTEnabled2 === 0 ||
+                    !trigger.BTTGestureNotes ||
+                    trigger.BTTGestureNotes === ""
+                )
+                    continue;
+
+                const uuid = trigger.BTTUUID;
+                let mod = "";
+
+                if (trigger.BTTRequiredModifierKeys) {
+                    mod = getModifiersForBitmask(
+                        trigger.BTTRequiredModifierKeys,
+                        false
+                    );
+
+                    trigger.BTTTriggerTypeDescription =
+                        trigger.BTTTriggerTypeDescription.replace(" (modifier key needed)", "");
+                }
+
+                allTrackpadShortcuts[uuid] = {
+                    "action": trigger.BTTGestureNotes,
+                    "binding": (mod + " " + trigger.BTTTriggerTypeDescription)
+                }
+            }
+
+            return allTrackpadShortcuts;
+        }
+
+        function addTrackpadShortcutsToContainer(shortcuts) {
+            const container = document.getElementById("trackpadShortcutsContainer");
+
+            for (const uuid of Object.keys(shortcuts)) {
+                const shortcutElement = document.createElement("div");
+                shortcutElement.classList.add("shortcut");
+
+                const shortcut = shortcuts[uuid];
+
+                const actionElement = document.createElement("div");
+                actionElement.classList.add("action");
+                actionElement.textContent = shortcut.action;
+
+                const bindingElement = document.createElement("div");
+                bindingElement.classList.add("binding");
+                bindingElement.textContent = shortcut.binding;
+
+                shortcutElement.appendChild(actionElement);
+                shortcutElement.appendChild(bindingElement);
+
+                container.appendChild(shortcutElement);
+            }
+        }
+
+        // Function to switch between pages
+        async function switchPage() {
+            const keyboardContainer = document.getElementById("keyboardShortcutsContainer");
+            const trackpadContainer = document.getElementById("trackpadShortcutsContainer");
+            const keyboardTitle = document.getElementById("keyboardTitle");
+            const trackpadTitle = document.getElementById("trackpadTitle");
+            const switchButton = document.getElementById("switchPageButton");
+
+            if (keyboardContainer.style.display === "block") {
+                // Switch to Trackpad page
+                keyboardContainer.style.display = "none";
+                keyboardTitle.style.display = "none";
+                trackpadContainer.style.display = "block";
+                trackpadTitle.style.display = "block";
+                switchButton.textContent = "Show Keyboard";
+
+                const bundleIdentifier = await get_string_variable({
+                    variable_name: "BTTActiveAppBundleIdentifier",
+                });
+
+                const trackpadAppShortcuts = await getAppTrackpadShortcuts(bundleIdentifier);
+                const trackpadGlobalShortcuts = await getAppTrackpadShortcuts("BT.G");
+
+                // Clear the trackpad container
+                trackpadContainer.innerHTML = "";
+
+                addTrackpadShortcutsToContainer({ ...trackpadAppShortcuts, ...trackpadGlobalShortcuts });
+            } else {
+                // Switch to Keyboard page
+                trackpadContainer.style.display = "none";
+                trackpadTitle.style.display = "none";
+                keyboardContainer.style.display = "block";
+                keyboardTitle.style.display = "block";
+                switchButton.textContent = "Show Trackpad";
+            }
+        }
+
+        function getKeycodeStringForKeycode(keycode) {
+            switch (keycode) {
+                case 0x00:
+                    {
+                        return "A";
+                    }
+                case 0x01:
+                    {
+                        return "S";
+                    }
+                case 0x02:
+                    {
+                        return "D";
+                    }
+                case 0x03:
+                    {
+                        return "F";
+                    }
+                case 0x04:
+                    {
+                        return "H";
+                    }
+                case 0x05:
+                    {
+                        return "G";
+                    }
+                case 0x06:
+                    {
+                        return "Z";
+                    }
+                case 0x07:
+                    {
+                        return "X";
+                    }
+                case 0x08:
+                    {
+                        return "C";
+                    }
+                case 0x09:
+                    {
+                        return "V";
+                    }
+                case 0x0b:
+                    {
+                        return "B";
+                    }
+                case 0x0c:
+                    {
+                        return "Q";
+                    }
+                case 0x0d:
+                    {
+                        return "W";
+                    }
+                case 0x0e:
+                    {
+                        return "E";
+                    }
+                case 0x0f:
+                    {
+                        return "R";
+                    }
+                case 0x10:
+                    {
+                        return "Y";
+                    }
+                case 0x11:
+                    {
+                        return "T";
+                    }
+                case 0x12:
+                    {
+                        return "1";
+                    }
+                case 0x13:
+                    {
+                        return "2";
+                    }
+                case 0x14:
+                    {
+                        return "3";
+                    }
+                case 0x15:
+                    {
+                        return "4";
+                    }
+                case 0x16:
+                    {
+                        return "6";
+                    }
+                case 0x17:
+                    {
+                        return "5";
+                    }
+                case 0x18:
+                    {
+                        return "=";
+                    }
+                case 0x19:
+                    {
+                        return "9";
+                    }
+                case 0x1a:
+                    {
+                        return "7";
+                    }
+                case 0x1b:
+                    {
+                        return "-";
+                    }
+                case 0x1c:
+                    {
+                        return "8";
+                    }
+                case 0x1d:
+                    {
+                        return "0";
+                    }
+                case 0x1e:
+                    {
+                        return "]";
+                    }
+                case 0x1f:
+                    {
+                        return "O";
+                    }
+                case 0x20:
+                    {
+                        return "U";
+                    }
+                case 0x21:
+                    {
+                        return "[";
+                    }
+                case 0x22:
+                    {
+                        return "I";
+                    }
+                case 0x23:
+                    {
+                        return "P";
+                    }
+                case 0x25:
+                    {
+                        return "L";
+                    }
+                case 0x26:
+                    {
+                        return "J";
+                    }
+                case 0x27:
+                    {
+                        return '"';
+                    }
+                case 0x28:
+                    {
+                        return "K";
+                    }
+                case 0x29:
+                    {
+                        return ";";
+                    }
+                case 0x2a:
+                    {
+                        return "\\";
+                    }
+                case 0x2b:
+                    {
+                        return ",";
+                    }
+                case 0x2c:
+                    {
+                        return "/";
+                    }
+                case 0x2d:
+                    {
+                        return "N";
+                    }
+                case 0x2e:
+                    {
+                        return "M";
+                    }
+                case 0x2f:
+                    {
+                        return ".";
+                    }
+                case 0x32:
+                    {
+                        return "`";
+                    }
+                case 0x41:
+                    {
+                        return ".";
+                    }
+                case 0x43:
+                    {
+                        return "*";
+                    }
+                case 0x45:
+                    {
+                        return "+";
+                    }
+                case 0x47:
+                    {
+                        return "?";
+                    }
+                case 0x4b:
+                    {
+                        return "%";
+                    }
+                case 0x4c:
+                    {
+                        return "return";
+                    }
+                case 0x4e:
+                    {
+                        return "-";
+                    }
+                case 0x51:
+                    {
+                        return "=";
+                    }
+                case 0x52:
+                    {
+                        return "0";
+                    }
+                case 0x53:
+                    {
+                        return "1";
+                    }
+                case 0x54:
+                    {
+                        return "2";
+                    }
+                case 0x55:
+                    {
+                        return "3";
+                    }
+                case 0x56:
+                    {
+                        return "4";
+                    }
+                case 0x57:
+                    {
+                        return "5";
+                    }
+                case 0x58:
+                    {
+                        return "6";
+                    }
+                case 0x59:
+                    {
+                        return "7";
+                    }
+                case 0x5b:
+                    {
+                        return "8";
+                    }
+                case 0x5c:
+                    {
+                        return "9";
+                    }
+                case 0x24:
+                    {
+                        return "Return";
+                    }
+                case 0x30:
+                    {
+                        return "Tab";
+                    }
+                case 0x31:
+                    {
+                        return "Space";
+                    }
+                case 0x33:
+                    {
+                        return "Delete";
+                    }
+                case 0x35:
+                    {
+                        return "Escape";
+                    }
+                case 0x37:
+                    {
+                        return "Command";
+                    }
+                case 0x38:
+                    {
+                        return "Shift";
+                    }
+                case 0x39:
+                    {
+                        return "CapsLock";
+                    }
+                case 0x3a:
+                    {
+                        return "Option";
+                    }
+                case 0x3b:
+                    {
+                        return "Control";
+                    }
+                case 0x3c:
+                    {
+                        return "RightShift";
+                    }
+                case 0x3d:
+                    {
+                        return "RightOption";
+                    }
+                case 0x3e:
+                    {
+                        return "RightControl";
+                    }
+                case 0x3f:
+                    {
+                        return "Function";
+                    }
+                case 0x40:
+                    {
+                        return "F17";
+                    }
+                case 0x48:
+                    {
+                        return "VolumeUp";
+                    }
+                case 0x49:
+                    {
+                        return "VolumeDown";
+                    }
+                case 0x4a:
+                    {
+                        return "Mute";
+                    }
+                case 0x4f:
+                    {
+                        return "F18";
+                    }
+                case 0x50:
+                    {
+                        return "F19";
+                    }
+                case 0x5a:
+                    {
+                        return "F20";
+                    }
+                case 0x60:
+                    {
+                        return "F5";
+                    }
+                case 0x61:
+                    {
+                        return "F6";
+                    }
+                case 0x62:
+                    {
+                        return "F7";
+                    }
+                case 0x63:
+                    {
+                        return "F3";
+                    }
+                case 0x64:
+                    {
+                        return "F8";
+                    }
+                case 0x65:
+                    {
+                        return "F9";
+                    }
+                case 0x67:
+                    {
+                        return "F11";
+                    }
+                case 0x69:
+                    {
+                        return "F13";
+                    }
+                case 0x6a:
+                    {
+                        return "F16";
+                    }
+                case 0x6b:
+                    {
+                        return "F14";
+                    }
+                case 0x6d:
+                    {
+                        return "F10";
+                    }
+                case 0x6f:
+                    {
+                        return "F12";
+                    }
+                case 0x71:
+                    {
+                        return "F15";
+                    }
+                case 0x72:
+                    {
+                        return "Help";
+                    }
+                case 0x73:
+                    {
+                        return "Home";
+                    }
+                case 0x74:
+                    {
+                        return "PageUp";
+                    }
+                case 0x75:
+                    {
+                        return "ForwardDelete";
+                    }
+                case 0x76:
+                    {
+                        return "F4";
+                    }
+                case 0x77:
+                    {
+                        return "End";
+                    }
+                case 0x78:
+                    {
+                        return "F2";
+                    }
+                case 0x79:
+                    {
+                        return "PageDown";
+                    }
+                case 0x7a:
+                    {
+                        return "F1";
+                    }
+                case 0x7b:
+                    {
+                        return "LeftArrow";
+                    }
+                case 0x7c:
+                    {
+                        return "RightArrow";
+                    }
+                case 0x7d:
+                    {
+                        return "DownArrow";
+                    }
+                case 0x7e:
+                    {
+                        return "UpArrow";
+                    }
+                default:
+                    {
+                        return "??";
+                    }
+            }
+        }
+
+        function getModifiersForBitmask(bitMask, leftRight) {
+            if (bitMask === 0 || bitMask === -1) {
+                return "";
+            }
+            var modifierString = "";
+
+            if (leftRight && (bitMask & 0x00000001 || bitMask & 0x00002000)) {
+                if (bitMask & 0x00000001) {
+                    modifierString += "⌃(L)";
+                }
+                if (bitMask & 0x00002000) {
+                    modifierString += "⌃(R)";
+                }
+            } else {
+                if (bitMask & (1 << 18)) {
+                    modifierString += "⌃";
+                }
+            }
+
+            if (leftRight && (bitMask & 0x00000002 || bitMask & 0x00000004)) {
+                if (bitMask & 0x00000002) {
+                    modifierString += "⇧(L)";
+                }
+                if (bitMask & 0x00000004) {
+                    modifierString += "⇧(R)";
+                }
+            } else {
+                if (bitMask & (1 << 17)) {
+                    modifierString += "⇧";
+                }
+            }
+
+            if (leftRight && (bitMask & 0x00000010 || bitMask & 0x00000008)) {
+                if (bitMask & 0x00000010) {
+                    modifierString += "⌘(R)";
+                }
+                if (bitMask & 0x00000008) {
+                    modifierString += "⌘(L)";
+                }
+            } else {
+                if (bitMask & (1 << 20)) {
+                    modifierString += "⌘";
+                }
+            }
+
+            if (leftRight && (bitMask & 0x00000020 || bitMask & 0x00000040)) {
+                if (bitMask & 0x00000020) {
+                    modifierString += "⌥(L)";
+                }
+                if (bitMask & 0x00000040) {
+                    modifierString += "⌥(R)";
+                }
+            } else {
+                if (bitMask & (1 << 19)) {
+                    modifierString += "⌥";
+                }
+            }
+
+            if (bitMask & (1 << 23)) {
+                modifierString += "fn";
+            }
+
+            return modifierString;
+        }
+
+        async function BTTNotification(note) {
+            setTimeout(async () => {
+                let data = JSON.parse(note);
+
+                if (get_string_variable !== undefined) {
+                    // example to get the currently active app, this works for any BTT variable you define:
+                    if (
+                        data.note == "BTTVariableChanged" &&
+                        (data.name == "BTTActiveAppBundleIdentifier" ||
+                            data.name == "BTTActiveWindowTitle")
+                    ) {
+                        const bundleIdentifier = await get_string_variable({
+                            variable_name: "BTTActiveAppBundleIdentifier",
+                        });
+
+                        const appKeyboardShortcuts = await getAppKeyboardShortcuts(bundleIdentifier);
+                        const globalKeyboardShortcuts = await getAppKeyboardShortcuts("BT.G")
+                        const appTrackpadShortcuts = await getAppTrackpadShortcuts(bundleIdentifier);
+                        const globalTrackpadShortcuts = await getAppTrackpadShortcuts("BT.G");
+                        const keyboardContainer = document.getElementById("keyboardShortcutsContainer");
+                        keyboardContainer.innerHTML = "";
+                        const trackpadContainer = document.getElementById("trackpadShortcutsContainer");
+                        trackpadContainer.innerHTML = "";
+
+                        // Add the shortcuts to the container
+                        addKeyboardShortcutsToContainer({ ...appKeyboardShortcuts, ...globalKeyboardShortcuts });
+                        addTrackpadShortcutsToContainer({ ...appTrackpadShortcuts, ...globalTrackpadShortcuts });
+                    }
+                }
+            }, 200);
+        }
     </script>
 </body>
 </html>
