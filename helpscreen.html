@@ -12,15 +12,17 @@
         color: rgb(30, 30, 30);
         margin: 0; /* Remove default margin to start from the top */
         padding: 0; /* Remove default padding */
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        overflow: hidden;
     }
 
-    /* Hide the scrollbar for WebKit browsers (Safari, Chrome, Edge) */
-    body::-webkit-scrollbar {
-        width: 0.1em; /* Set the width of the scrollbar to a very small value */
-    }
-
-    body::-webkit-scrollbar-thumb {
-        background-color: transparent; /* Hide the thumb */
+    @supports (-webkit-appearance:none) {
+        ::-webkit-scrollbar {
+            width: 0;  /* Remove scrollbar space */
+            background: transparent;  /* Optional: just make scrollbar invisible */
+        }
     }
 
     /* Style for the title */
@@ -28,10 +30,13 @@
         text-align: center;
         font-size: 18px;
         margin-top: 20px;
+        margin-bottom: 12px;
     }
 
     .container {
-        padding: 26px; /* Add padding to create space from the top */
+        padding: 6px 20px 6px 20px;
+        overflow-y: auto; /* Add scroll to this container */
+        flex-grow: 1; /* Allow it to grow and take up remaining vertical space */
     }
 
     /* Style for each shortcut item */
@@ -60,9 +65,12 @@
     .page-button {
         display: block;
         margin: 0 auto; /* Center horizontally */
+        margin-top: 6px;
+        margin-bottom: 10px;
         background-color: transparent;
         border: none;
         cursor: pointer;
+        width: 100%;
     }
     </style>
 </head>
