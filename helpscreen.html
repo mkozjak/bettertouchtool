@@ -126,7 +126,7 @@
                 !trigger.BTTShortcutModifierKeys ||
                 trigger.BTTShortcutModifierKeys === -1 ||
                 !trigger.BTTGestureNotes ||
-                trigger.BTTGestureNotes === ''
+                trigger.BTTGestureNotes === ""
             )
                 continue;
 
@@ -139,8 +139,8 @@
             const uuid = trigger.BTTUUID;
 
             allKeyboardShortcuts[uuid] = {
-                'action': trigger.BTTGestureNotes,
-                'binding': (mod + key).split('').join(' ')
+                "action": trigger.BTTGestureNotes,
+                "binding": (mod + key).split("").join(" ")
             }
         }
 
@@ -188,12 +188,12 @@
             if (
                 trigger.BTTEnabled2 === 0 ||
                 !trigger.BTTGestureNotes ||
-                trigger.BTTGestureNotes === ''
+                trigger.BTTGestureNotes === ""
             )
                 continue;
 
             const uuid = trigger.BTTUUID;
-            let mod = '';
+            let mod = "";
 
             if (trigger.BTTRequiredModifierKeys) {
                 mod = getModifiersForBitmask(
@@ -202,12 +202,12 @@
                 );
 
                 trigger.BTTTriggerTypeDescription =
-                    trigger.BTTTriggerTypeDescription.replace(' (modifier key needed)', '');
+                    trigger.BTTTriggerTypeDescription.replace(" (modifier key needed)", "");
             }
 
             allTrackpadShortcuts[uuid] = {
-                'action': trigger.BTTGestureNotes,
-                'binding': (mod + ' ' + trigger.BTTTriggerTypeDescription)
+                "action": trigger.BTTGestureNotes,
+                "binding": (mod + " " + trigger.BTTTriggerTypeDescription)
             }
         }
 
@@ -817,9 +817,9 @@
                     const appTrackpadShortcuts = await getAppTrackpadShortcuts(bundleIdentifier);
                     const globalTrackpadShortcuts = await getAppTrackpadShortcuts("BT.G");
                     const keyboardContainer = document.getElementById("keyboardShortcutsContainer");
-                    keyboardContainer.innerHTML = '';
+                    keyboardContainer.innerHTML = "";
                     const trackpadContainer = document.getElementById("trackpadShortcutsContainer");
-                    trackpadContainer.innerHTML = '';
+                    trackpadContainer.innerHTML = "";
 
                     // Add the shortcuts to the container
                     addKeyboardShortcutsToContainer({ ...appKeyboardShortcuts, ...globalKeyboardShortcuts });
