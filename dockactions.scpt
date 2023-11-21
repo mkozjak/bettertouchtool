@@ -1,6 +1,6 @@
 -- Empties the trash bin without warning the user
 -- Quits TIDAL app
--- To be used with a three-finger double-tap on macOS Dock items
+-- To be used with an option three-finger click on macOS Dock items
 -- Adapted from https://community.folivora.ai/t/enhanced-dock-for-macos/22364
 
 tell application "System Events"
