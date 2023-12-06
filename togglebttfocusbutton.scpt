@@ -26,11 +26,9 @@ tell application "Shortcuts Events"
             return "disabled"
         end if
     else
-        if manualToggle is equal to "true" then
-            tell application "BetterTouchTool"
-                update_trigger "E5611CB3-DE4D-4980-BB12-A93E79CA040A" json "{\"BTTTriggerConfig\": {\"BTTTouchBarFontColor\": \"255, 255, 255, 255\"}}"
-            end tell
-        end if
+        tell application "BetterTouchTool"
+            update_trigger "E5611CB3-DE4D-4980-BB12-A93E79CA040A" json "{\"BTTTriggerConfig\": {\"BTTTouchBarFontColor\": \"255, 255, 255, 255\"}}"
+        end tell
 
         return "disabled"
     end if
