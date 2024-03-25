@@ -1,5 +1,5 @@
 tell application "System Events"
-    set defaultPlayer to "Tidal"
+    set defaultPlayer to "Swinsian"
 
     if (get name of every application process) contains "Safari" then
         tell application "Safari"
