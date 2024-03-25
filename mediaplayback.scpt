@@ -24,6 +24,14 @@ tell application "System Events"
         return
     end if
 
+    if (get name of every application process) contains "Swinsian" then
+        tell process "Swinsian"
+            click menu item 0 of menu "Control" of menu bar 1
+        end tell
+
+        return
+    end if
+
     if (get name of every application process) contains "IINA" then
         tell process "IINA"
             click menu item 0 of menu "Playback" of menu bar 1
