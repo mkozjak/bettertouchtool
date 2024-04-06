@@ -1,5 +1,5 @@
 tell application "System Events"
-    set defaultPlayer to "Swinsian"
+    set defaultPlayer to "TIDAL"
 
     if (get name of every application process) contains "Safari" then
         tell application "Safari"
@@ -59,14 +59,23 @@ tell application "System Events"
         return
     end if
 
-    # MPD?
+    # MPD or CMUS?
     set mpdRunning to false
+    set cmusRunning to false
+
+    try
+        do shell script "/opt/homebrew/bin/cmus-remote -C"
+        set cmusRunning to true
+    end try
+
     try
         do shell script "nc -z -w 2 localhost 6600"
         set mpdRunning to true
     end try
 
-    if mpdRunning then
+    if cmusRunning then
+        do shell script "/opt/homebrew/bin/cmus-remote --pause"
+    else if mpdRunning then
         do shell script "echo \"pause\" | nc localhost 6600"
     else
         click UI element defaultPlayer of list 1 of application process "Dock"
