@@ -33,9 +33,29 @@ tell application "System Events"
     end if
 
     if (get name of every application process) contains "IINA" then
-        tell process "IINA"
-            click menu item 0 of menu "Playback" of menu bar 1
+        -- Define the socket path and command to check if playback is paused
+        set mpvSocket to "/tmp/mpv-socket"
+        set pauseCommand to "{ \"command\": [\"get_property\", \"pause\"] }"
+        set trueValue to "true"
+        set falseValue to "false"
+
+        -- Send the get property command and capture the response
+        tell application "System Events"
+            set pauseResponse to do shell script "echo '" & pauseCommand & "' | socat - " & mpvSocket & " | jq -r '.data'"
         end tell
+
+        -- Check if the response is true or false
+        if pauseResponse = trueValue then
+            -- Send command to set pause to false
+            tell application "System Events"
+                do shell script "echo '{ \"command\": [\"set_property\", \"pause\", false] }' | socat - " & mpvSocket
+            end tell
+        else
+            -- Send command to set pause to true
+            tell application "System Events"
+                do shell script "echo '{ \"command\": [\"set_property\", \"pause\", true] }' | socat - " & mpvSocket
+            end tell
+        end if
 
         return
     end if
