@@ -41,19 +41,19 @@ tell application "System Events"
 
         -- Send the get property command and capture the response
         tell application "System Events"
-            set pauseResponse to do shell script "echo '" & pauseCommand & "' | socat - " & mpvSocket & " | jq -r '.data'"
+            set pauseResponse to do shell script "echo '" & pauseCommand & "' | /opt/homebrew/bin/socat - " & mpvSocket & " | /opt/homebrew/bin/jq -r '.data'"
         end tell
 
         -- Check if the response is true or false
         if pauseResponse = trueValue then
             -- Send command to set pause to false
             tell application "System Events"
-                do shell script "echo '{ \"command\": [\"set_property\", \"pause\", false] }' | socat - " & mpvSocket
+                do shell script "echo '{ \"command\": [\"set_property\", \"pause\", false] }' | /opt/homebrew/bin/socat - " & mpvSocket
             end tell
         else
             -- Send command to set pause to true
             tell application "System Events"
-                do shell script "echo '{ \"command\": [\"set_property\", \"pause\", true] }' | socat - " & mpvSocket
+                do shell script "echo '{ \"command\": [\"set_property\", \"pause\", true] }' | /opt/homebrew/bin/socat - " & mpvSocket
             end tell
         end if
 
