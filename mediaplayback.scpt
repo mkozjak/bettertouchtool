@@ -1,6 +1,4 @@
 tell application "System Events"
-    set defaultPlayer to "TIDAL"
-
     if (get name of every application process) contains "Safari" then
         tell application "Safari"
             repeat with t in tabs of windows
@@ -98,6 +96,6 @@ tell application "System Events"
     else if mpdRunning then
         do shell script "echo \"pause\" | nc localhost 6600"
     else
-        click UI element defaultPlayer of list 1 of application process "Dock"
+        tell application "IINA" to activate
     end if
 end tell
