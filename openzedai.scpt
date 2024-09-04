@@ -17,7 +17,7 @@ tell application "System Events"
             end if
         end repeat
 
-        do shell script "/opt/homebrew/bin/zed /opt/dev/private/.zedai"
+        do shell script "/opt/homebrew/bin/zed --new /opt/dev/private/.zedai"
 
         tell application "BetterTouchTool"
             trigger_named "Resize Zed Assistant"
