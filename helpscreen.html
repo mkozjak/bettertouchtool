@@ -224,13 +224,13 @@
                         false
                     );
 
-                    trigger.BTTTriggerTypeDescription =
-                        trigger.BTTTriggerTypeDescription.replace(" (modifier key needed)", "");
+                    trigger.BTTTriggerTypeDescriptionReadOnly =
+                        trigger.BTTTriggerTypeDescriptionReadOnly.replace(" (modifier key needed)", "");
                 }
 
                 allTrackpadShortcuts[uuid] = {
                     "action": trigger.BTTGestureNotes,
-                    "binding": (mod + " " + trigger.BTTTriggerTypeDescription),
+                    "binding": (mod + " " + trigger.BTTTriggerTypeDescriptionReadOnly),
                     "context": id === "BT.G" ? "global" : "app"
                 }
             }
@@ -631,12 +631,14 @@
                         return "F17";
                     }
                 case 0x48:
+                case 0x3e8:
                     {
-                        return "VolumeUp";
+                        return "vol up";
                     }
                 case 0x49:
+                case 0x3e9:
                     {
-                        return "VolumeDown";
+                        return "vol dn";
                     }
                 case 0x4a:
                     {
@@ -758,8 +760,13 @@
                     {
                         return "UpArrow";
                     }
+                case 0x3f8:
+                    {
+                        return "⏯️";
+                    }
                 default:
                     {
+                        console.log("unknown keycode:", keycode)
                         return "??";
                     }
             }
