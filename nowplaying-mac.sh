@@ -3,13 +3,18 @@
 np=/opt/homebrew/bin/nowplaying-cli
 
 # Get song info from nowplaying-cli
-output=$("$np" get title artist album)
+output=$("$np" get title artist album | perl -MHTML::Entities -pe 'decode_entities($_);')
 artwork=$("$np" get artworkData)
 
 # Parse the lines into variables
 title=$(echo "$output" | sed -n '1p')
 artist=$(echo "$output" | sed -n '2p')
 album=$(echo "$output" | sed -n '3p')
+
+# Print information (for debugging purposes)
+# echo "Album: $album"
+# echo "Artist: $artist"
+# echo "Title: $title"
 
 # Check if title is empty (no song playing)
 if [ -z "$title" ]; then
