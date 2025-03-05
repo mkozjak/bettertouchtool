@@ -40,9 +40,10 @@ title=$(echo "$output" | sed -n '1p')
 artist=$(echo "$output" | sed -n '2p')
 album=$(echo "$output" | sed -n '3p')
 
-# Exit if no song is playing
-if [ -z "$title" ]; then
-    echo "No song currently playing."
+# Exit if not playing
+mediatype=$("$NOWPLAYING_CLI" get mediaType)
+if [ "$mediatype" = "null" ]; then
+    echo "Not playing media."
     exit 0
 fi
 
