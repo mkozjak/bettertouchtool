@@ -206,6 +206,7 @@
 
             const allTriggersJSONArray = JSON.parse(allTrackpadShortcutsJSONString);
             const allTrackpadShortcuts = {};
+            let previousGestureNotes = null;
 
             for (const trigger of allTriggersJSONArray) {
                 if (
@@ -228,11 +229,18 @@
                         trigger.BTTTriggerTypeDescriptionReadOnly.replace(" (modifier key needed)", "");
                 }
 
+                if (trigger.BTTGestureNotes === previousGestureNotes)
+                    trigger.BTTGestureNotes = "";
+                else
+                    previousGestureNotes = trigger.BTTGestureNotes;
+
                 allTrackpadShortcuts[uuid] = {
                     "action": trigger.BTTGestureNotes,
                     "binding": (mod + " " + trigger.BTTTriggerTypeDescriptionReadOnly),
                     "context": id === "BT.G" ? "global" : "app"
                 }
+
+
             }
 
             return allTrackpadShortcuts;
