@@ -68,7 +68,7 @@ image_path=$(extract_tag "$response" "image")
 
 # Exit if no song is playing
 if [ -z "$title" ]; then
-    echo "No song currently playing."
+    alerter -title "Bluesound" -message "Playback stopped" -timeout 5 -sender $SENDER
     exit 0
 fi
 

@@ -43,7 +43,7 @@ album=$(echo "$output" | sed -n '3p')
 # Exit if not playing
 mediatype=$("$NOWPLAYING_CLI" get mediaType)
 if [ "$mediatype" = "null" ]; then
-    echo "Not playing media."
+    alerter -title "Media" -message "No content" -timeout 5 -sender $SENDER
     exit 0
 fi
 
