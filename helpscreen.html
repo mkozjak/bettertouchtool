@@ -173,7 +173,6 @@
                     separator.classList.add("separator");
                     container.appendChild(separator);
                     separatorAdded = true;
-                    continue;
                 }
 
                 const shortcutElement = document.createElement("div");
@@ -774,7 +773,6 @@
                     }
                 default:
                     {
-                        console.log("unknown keycode:", keycode)
                         return "??";
                     }
             }
