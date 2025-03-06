@@ -17,7 +17,28 @@ extract_tag() {
 download_artwork() {
     local url="$1"
     local output_path="$2"
-    curl -s "$url" --output "$output_path"
+
+    # Download to temporary file first
+    local temp_file="/tmp/artwork_temp"
+    curl -s "$url" --output "$temp_file"
+
+    # Check file type
+    local file_type=$(file -b "$temp_file")
+
+    if [[ $file_type == *"image"* ]] || [[ $file_type == *"PNG"* ]] || [[ $file_type == *"JPEG"* ]]; then
+        mv "$temp_file" "$output_path"
+        return 0
+    elif [[ $file_type == *"ASCII text"* ]] || [[ $file_type == *"UTF-8 text"* ]]; then
+        # Read URL from text file and download actual image
+        local image_url=$(cat "$temp_file")
+        curl -s "$image_url" --output "$output_path"
+        rm "$temp_file"
+        return 0
+    fi
+
+    # Cleanup if neither condition met
+    rm "$temp_file"
+    return 1
 }
 
 # Function to perform Google search
