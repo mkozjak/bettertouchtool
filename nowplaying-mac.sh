@@ -41,8 +41,8 @@ artist=$(echo "$output" | sed -n '2p')
 album=$(echo "$output" | sed -n '3p')
 
 # Exit if not playing
-mediatype=$("$NOWPLAYING_CLI" get mediaType)
-if [ "$mediatype" = "null" ]; then
+status=$("$NOWPLAYING_CLI" get-raw)
+if [ "$status" = "(null)" ]; then
     alerter -title "Media" -message "No content" -timeout 5 -sender $SENDER
     exit 0
 fi
