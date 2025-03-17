@@ -65,9 +65,10 @@ album=$(extract_tag "$response" "album")
 artist=$(extract_tag "$response" "artist")
 title=$(extract_tag "$response" "title1")
 image_path=$(extract_tag "$response" "image")
+state=$(extract_tag "$response" "state")
 
-# Exit if no song is playing
-if [ -z "$title" ]; then
+# Exit if no song is playing (empty title or stopped state)
+if [ -z "$title" ] || [ "$state" == "stop" ]; then
     alerter -title "Bluesound" -message "Playback stopped" -timeout 5 -sender $SENDER
     exit 0
 fi
