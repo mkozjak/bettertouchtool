@@ -1,5 +1,5 @@
 -- get current brightness for display 1
-set currentVal to do shell script "/usr/local/bin/brightness -l 2>/dev/null | grep 'display 1: brightness' | awk '{ print $NF }' | xargs printf \"%.1f\\n\" | sed 's/\\./,/g'"
+set currentVal to do shell script "/usr/local/bin/brightness -l 2>/dev/null | grep 'built-in' -A 1 | tail -n 1 | awk '{ print $NF }' | xargs printf \"%.1f\\n\" | sed 's/\\./,/g'"
 
 -- convert to number
 set currentFloat to currentVal as real
