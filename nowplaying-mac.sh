@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Configuration
-NOWPLAYING_CLI=/opt/homebrew/bin/nowplaying-cli
+MEDIA_CONTROL=/opt/homebrew/bin/media-control
 TIMEOUT=10
 TEMP_IMAGE="/tmp/nowplaying_artwork.jpg"
 SENDER="com.apple.finder"
@@ -10,7 +10,7 @@ SENDER="com.apple.finder"
 save_artwork() {
     local artwork="$1"
     local output_path="$2"
-    if [ -n "$artwork" ]; then
+    if [ -n "$artwork" ] && [ "$artwork" != "null" ]; then
         echo "$artwork" | base64 --decode > "$output_path"
         echo "$output_path"
     else
@@ -31,20 +31,51 @@ lyrics_search() {
     open -a Safari "https://genius.com/search?q=$encoded_search"
 }
 
+# Check if media-control is available
+if [ ! -x "$MEDIA_CONTROL" ]; then
+    alerter -title "Media Control Error" -message "media-control not found at $MEDIA_CONTROL" -timeout 5 -sender $SENDER
+    exit 1
+fi
+
+# Check if jq is available
+if ! command -v jq &> /dev/null; then
+    alerter -title "Media Control Error" -message "jq is required but not installed. Install with: brew install jq" -timeout 5 -sender $SENDER
+    exit 1
+fi
+
 # Get song information
-output=$("$NOWPLAYING_CLI" get title artist album | perl -MHTML::Entities -pe 'decode_entities($_);')
-artwork=$("$NOWPLAYING_CLI" get artworkData)
+output=$("$MEDIA_CONTROL" get 2>/dev/null)
 
-# Parse the metadata
-title=$(echo "$output" | sed -n '1p')
-artist=$(echo "$output" | sed -n '2p')
-album=$(echo "$output" | sed -n '3p')
-
-# Exit if not playing
-status=$("$NOWPLAYING_CLI" get-raw)
-if [ "$status" = "(null)" ]; then
+# Check if we got valid JSON output
+if [ $? -ne 0 ] || [ -z "$output" ]; then
     alerter -title "Media" -message "No content" -timeout 5 -sender $SENDER
     exit 0
+fi
+
+# Check if there's actually media playing
+bundle_id=$(echo "$output" | jq -r '.bundleIdentifier // empty')
+if [ -z "$bundle_id" ] || [ "$bundle_id" = "null" ]; then
+    alerter -title "Media" -message "No content" -timeout 5 -sender $SENDER
+    exit 0
+fi
+
+# Parse the metadata using jq
+title=$(echo "$output" | jq -r '.title // empty' | perl -MHTML::Entities -pe 'decode_entities($_);')
+artist=$(echo "$output" | jq -r '.artist // empty' | perl -MHTML::Entities -pe 'decode_entities($_);')
+album=$(echo "$output" | jq -r '.album // empty' | perl -MHTML::Entities -pe 'decode_entities($_);')
+artwork=$(echo "$output" | jq -r '.artworkData // empty')
+
+# Handle empty fields
+if [ -z "$title" ]; then
+    title="Unknown Title"
+fi
+
+if [ -z "$artist" ]; then
+    artist="Unknown Artist"
+fi
+
+if [ -z "$album" ]; then
+    album="Unknown Album"
 fi
 
 # Process artwork and construct message
