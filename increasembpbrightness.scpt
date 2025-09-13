@@ -1,11 +1,11 @@
 -- get current brightness for display 1
-set currentVal to do shell script "/usr/local/bin/brightness -l 2>/dev/null | grep 'built-in' -A 1 | tail -n 1 | awk '{ print $NF }' | xargs printf \"%.1f\\n\" | sed 's/\\./,/g'"
+set currentVal to do shell script "/usr/local/bin/brightness -l 2>/dev/null | grep 'built-in' -A 1 | tail -n 1 | awk '{ print $NF }' | sed 's/\\./,/g'"
 
 -- convert to number
 set currentFloat to currentVal as real
 
--- increment by 0.1
-set newVal to currentFloat + (0.1 as real)
+-- increment by 0.0625
+set newVal to currentFloat + (0.0625 as real)
 
 -- clamp to 1.0 max
 if newVal > 1 then set newVal to 1
@@ -15,8 +15,11 @@ set newValStr to replace_chars(newValStr, ",", ".")
 -- apply new brightness
 do shell script "/usr/local/bin/brightness -d 1 " & newValStr
 
+set perc to newVal*100
+set percRound to (round perc rounding up)
+
 tell application "BetterTouchTool"
-	set_persistent_number_variable "mbp_brightness" to newVal*100
+	set_persistent_number_variable "mbp_brightness" to percRound
 end tell
 
 -- helper function
