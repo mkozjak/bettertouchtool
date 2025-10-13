@@ -163,18 +163,51 @@
 
         function addKeyboardShortcutsToContainer(shortcuts) {
             const container = document.getElementById("keyboardShortcutsContainer");
-            let separatorAdded = false;
+
+            // Separate app shortcuts and global shortcuts
+            const appShortcuts = [];
+            const globalShortcuts = [];
 
             for (const uuid of Object.keys(shortcuts)) {
                 const shortcut = shortcuts[uuid];
-
-                if (separatorAdded === false && shortcut.context === "global") {
-                    const separator = document.createElement("hr");
-                    separator.classList.add("separator");
-                    container.appendChild(separator);
-                    separatorAdded = true;
+                if (shortcut.context === "global") {
+                    globalShortcuts.push({ uuid, ...shortcut });
+                } else {
+                    appShortcuts.push({ uuid, ...shortcut });
                 }
+            }
 
+            // Sort global shortcuts alphabetically by action text
+            globalShortcuts.sort((a, b) => a.action.localeCompare(b.action));
+
+            // Add app shortcuts first
+            for (const shortcut of appShortcuts) {
+                const shortcutElement = document.createElement("div");
+                shortcutElement.classList.add("shortcut");
+
+                const actionElement = document.createElement("div");
+                actionElement.classList.add("action");
+                actionElement.textContent = shortcut.action;
+
+                const bindingElement = document.createElement("div");
+                bindingElement.classList.add("binding");
+                bindingElement.textContent = shortcut.binding;
+
+                shortcutElement.appendChild(actionElement);
+                shortcutElement.appendChild(bindingElement);
+
+                container.appendChild(shortcutElement);
+            }
+
+            // Add separator if there are global shortcuts
+            if (globalShortcuts.length > 0) {
+                const separator = document.createElement("hr");
+                separator.classList.add("separator");
+                container.appendChild(separator);
+            }
+
+            // Add sorted global shortcuts
+            for (const shortcut of globalShortcuts) {
                 const shortcutElement = document.createElement("div");
                 shortcutElement.classList.add("shortcut");
 
@@ -247,19 +280,51 @@
 
         function addTrackpadShortcutsToContainer(shortcuts) {
             const container = document.getElementById("trackpadShortcutsContainer");
-            let separatorAdded = false;
+
+            // Separate app shortcuts and global shortcuts
+            const appShortcuts = [];
+            const globalShortcuts = [];
 
             for (const uuid of Object.keys(shortcuts)) {
                 const shortcut = shortcuts[uuid];
-
-                if (separatorAdded === false && shortcut.context === "global") {
-                    const separator = document.createElement("hr");
-                    separator.classList.add("separator");
-                    container.appendChild(separator);
-                    separatorAdded = true;
-                    continue;
+                if (shortcut.context === "global") {
+                    globalShortcuts.push({ uuid, ...shortcut });
+                } else {
+                    appShortcuts.push({ uuid, ...shortcut });
                 }
+            }
 
+            // Sort global shortcuts alphabetically by action text
+            globalShortcuts.sort((a, b) => a.action.localeCompare(b.action));
+
+            // Add app shortcuts first
+            for (const shortcut of appShortcuts) {
+                const shortcutElement = document.createElement("div");
+                shortcutElement.classList.add("shortcut");
+
+                const actionElement = document.createElement("div");
+                actionElement.classList.add("action");
+                actionElement.textContent = shortcut.action;
+
+                const bindingElement = document.createElement("div");
+                bindingElement.classList.add("binding");
+                bindingElement.textContent = shortcut.binding;
+
+                shortcutElement.appendChild(actionElement);
+                shortcutElement.appendChild(bindingElement);
+
+                container.appendChild(shortcutElement);
+            }
+
+            // Add separator if there are global shortcuts
+            if (globalShortcuts.length > 0) {
+                const separator = document.createElement("hr");
+                separator.classList.add("separator");
+                container.appendChild(separator);
+            }
+
+            // Add sorted global shortcuts
+            for (const shortcut of globalShortcuts) {
                 const shortcutElement = document.createElement("div");
                 shortcutElement.classList.add("shortcut");
 
