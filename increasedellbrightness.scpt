@@ -6,7 +6,7 @@ if currentVal is missing value then
 	return
 end if
 
-set newVal to currentVal + 10
+set newVal to currentVal + 6
 if newVal > 100 then set newVal to 100
 
 do shell script "/opt/homebrew/bin/m1ddc display 1 set luminance " & newVal
