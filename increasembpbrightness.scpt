@@ -20,6 +20,16 @@ set percRound to (round perc rounding up)
 
 tell application "BetterTouchTool"
 	set_persistent_number_variable "mbp_brightness" to percRound
+
+	-- snap to nearest 6.25% step (1/16) to properly show on OSD
+    set stepSize to 6.25
+    set boxCount to round (perc / stepSize)
+    set snappedPerc to boxCount * stepSize
+
+    -- round down to whole number (no decimals)
+    set snappedPercInt to (snappedPerc div 1)
+
+    set_number_variable "mbp_brightness_snapped" to snappedPercInt
 end tell
 
 -- helper function
