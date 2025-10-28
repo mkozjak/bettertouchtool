@@ -31,7 +31,7 @@ async function customResize() {
     },
     iTerm2: {
       builtin: {
-        BTTActionMoveResizeConfig: '{"BTTOriginDisplay":0,"BTTChangeYOriginRelative":0,"BTTScreenOrigin":0,"BTTDirectionToMove":0,"BTTChangeHeightRelative":1,"BTTScreensToMove":-1,"BTTNewYAbsolute":1,"BTTNewXRelative":0,"BTTOriginToUse":0,"BTTNewWindowWidthRelative":60,"BTTChangeWindowWidth":true,"BTTNewWindowWidthAbsoluteAddition":0,"BTTNewXAbsolute":1,"BTTNewWindowHeightAbsoluteAddition":0,"BTTUseVisibleFrame":true,"BTTChangeYOrigin":1,"BTTCareForStageManager":false,"BTTChangeXOriginRelative":0,"BTTChangeWidthRelative":1,"BTTActiveOrHoveredWindow":0,"BTTNewWindowHeightRelative":86,"BTTChangeWindowHeight":true,"BTTNewYRelative":0,"BTTChangeXOrigin":1}',
+        BTTActionMoveResizeConfig: '{"BTTOriginDisplay":0,"BTTChangeYOriginRelative":0,"BTTScreenOrigin":0,"BTTDirectionToMove":0,"BTTChangeHeightRelative":1,"BTTScreensToMove":-1,"BTTNewYAbsolute":1,"BTTNewXRelative":0,"BTTOriginToUse":0,"BTTNewWindowWidthRelative":60,"BTTChangeWindowWidth":true,"BTTNewWindowWidthAbsoluteAddition":0,"BTTNewXAbsolute":1,"BTTNewWindowHeightAbsoluteAddition":0,"BTTUseVisibleFrame":true,"BTTChangeYOrigin":1,"BTTCareForStageManager":false,"BTTChangeXOriginRelative":0,"BTTChangeWidthRelative":1,"BTTActiveOrHoveredWindow":0,"BTTNewWindowHeightRelative":96,"BTTChangeWindowHeight":true,"BTTNewYRelative":0,"BTTChangeXOrigin":1}',
         BTTActionMoveResizeName: 'Center and Resize (Builtin)'
       },
       external: {
