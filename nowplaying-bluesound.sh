@@ -2,9 +2,10 @@
 
 # Configuration
 TIMEOUT=10
-BLUESOUND_HOST="bluesound.local:11000"
+BLUESOUND_HOST="bluesound.home.arpa:11000"
 TEMP_IMAGE="/tmp/nowplaying_artwork.jpg"
-SENDER="com.bluesound.bluos"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ICON="${SCRIPT_DIR}/assets/bluesound.png"
 
 # Function to extract XML tag content
 extract_tag() {
@@ -69,7 +70,7 @@ state=$(extract_tag "$response" "state")
 
 # Exit if no song is playing (empty title or stopped state)
 if [ -z "$title" ] || [ "$state" == "stop" ]; then
-    alerter -title "Bluesound" -message "Playback stopped" -timeout 5 -sender $SENDER
+    alerter --title "Bluesound" --message "Playback stopped" --timeout 5 --app-icon $ICON
     exit 0
 fi
 
@@ -81,10 +82,10 @@ download_artwork "$image_url" "$TEMP_IMAGE"
 message="$artist - $album"
 
 # Build alerter command
-cmd="alerter -title \"$title\" -message \"$message\" -timeout \"$TIMEOUT\" -sender \"$SENDER\" -actions Research,Lyrics"
+cmd="alerter --title \"$title\" --message \"$message\" --timeout \"$TIMEOUT\" --app-icon \"$ICON\" --actions Research,Lyrics"
 
 if [ -f "$TEMP_IMAGE" ]; then
-    cmd+=" -contentImage \"$TEMP_IMAGE\""
+    cmd+=" --content-image \"$TEMP_IMAGE\""
 fi
 
 # Execute alerter and capture output
