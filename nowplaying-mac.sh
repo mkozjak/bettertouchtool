@@ -83,7 +83,7 @@ message="$artist - $album"
 imagePath=$(save_artwork "$artwork" "$TEMP_IMAGE")
 
 # Build alerter command
-cmd="alerter -title \"$title\" -message \"$message\" -timeout \"$TIMEOUT\" -sender \"$SENDER\" -actions Research,Lyrics"
+cmd="alerter --title \"$title\" --message \"$message\" --timeout \"$TIMEOUT\" --sender \"$SENDER\" -actions Research,Lyrics"
 
 if [ -n "$imagePath" ] && [ -f "$imagePath" ]; then
     cmd+=" -contentImage \"$imagePath\""
