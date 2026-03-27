@@ -6,6 +6,8 @@ BLUESOUND_HOST="bluesound.home.arpa:11000"
 TEMP_IMAGE="/tmp/nowplaying_artwork.jpg"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ICON="${SCRIPT_DIR}/assets/bluesound.png"
+CURL="/usr/bin/curl"
+ALERTER="/opt/homebrew/bin/alerter"
 
 # Function to extract XML tag content
 extract_tag() {
@@ -21,7 +23,7 @@ download_artwork() {
 
     # Download to temporary file first
     local temp_file="/tmp/artwork_temp"
-    curl -s "$url" --output "$temp_file"
+    $CURL -s "$url" --output "$temp_file"
 
     # Check file type
     local file_type=$(file -b "$temp_file")
@@ -32,7 +34,7 @@ download_artwork() {
     elif [[ $file_type == *"ASCII text"* ]] || [[ $file_type == *"UTF-8 text"* ]]; then
         # Read URL from text file and download actual image
         local image_url=$(cat "$temp_file")
-        curl -s "$image_url" --output "$output_path"
+        $CURL -s "$image_url" --output "$output_path"
         rm "$temp_file"
         return 0
     fi
@@ -59,7 +61,7 @@ web_search() {
 }
 
 # Fetch the status from the Bluesound endpoint
-response=$(curl -s "http://${BLUESOUND_HOST}/Status")
+response=$($CURL -s "http://${BLUESOUND_HOST}/Status")
 
 # Extract metadata
 album=$(extract_tag "$response" "album")
@@ -70,7 +72,7 @@ state=$(extract_tag "$response" "state")
 
 # Exit if no song is playing (empty title or stopped state)
 if [ -z "$title" ] || [ "$state" == "stop" ]; then
-    alerter --title "Bluesound" --message "Playback stopped" --timeout 5 --app-icon $ICON
+    $ALERTER --title "Bluesound" --message "Playback stopped" --timeout 5 --app-icon $ICON
     exit 0
 fi
 
@@ -81,14 +83,14 @@ download_artwork "$image_url" "$TEMP_IMAGE"
 # Construct notification message
 message="$artist - $album"
 
-# Build alerter command
-cmd="alerter --title \"$title\" --message \"$message\" --timeout \"$TIMEOUT\" --app-icon \"$ICON\" --actions Research,Lyrics"
-
+# Build $ALERTER command
+cmd="$ALERTER --title \"$title\" --message \"$message\" --timeout \"$TIMEOUT\" --app-icon \"$ICON\" --actions Research,Lyrics"
+echo $cmd
 if [ -f "$TEMP_IMAGE" ]; then
     cmd+=" --content-image \"$TEMP_IMAGE\""
 fi
 
-# Execute alerter and capture output
+# Execute $ALERTER and capture output
 OUTPUT=$(eval "$cmd")
 
 # Handle button clicks

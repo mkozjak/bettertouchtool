@@ -5,6 +5,8 @@ MEDIA_CONTROL=/opt/homebrew/bin/media-control
 TIMEOUT=10
 TEMP_IMAGE="/tmp/nowplaying_artwork.jpg"
 SENDER="com.apple.finder"
+ALERTER="/opt/homebrew/bin/alerter"
+FINDER_ICON="/opt/dev/github.com/mkozjak/bettertouchtool/assets/finder.webp"
 
 # Function to decode and save artwork
 save_artwork() {
@@ -33,13 +35,13 @@ lyrics_search() {
 
 # Check if media-control is available
 if [ ! -x "$MEDIA_CONTROL" ]; then
-    alerter -title "Media Control Error" -message "media-control not found at $MEDIA_CONTROL" -timeout 5 -sender $SENDER
+    $ALERTER --title "Media Control Error" --message "media-control not found at $MEDIA_CONTROL" --timeout 5 --app-icon $FINDER_ICON
     exit 1
 fi
 
 # Check if jq is available
 if ! command -v jq &> /dev/null; then
-    alerter -title "Media Control Error" -message "jq is required but not installed. Install with: brew install jq" -timeout 5 -sender $SENDER
+    $ALERTER --title "Media Control Error" --message "jq is required but not installed. Install with: brew install jq" --timeout 5 ---app-icon $FINDER_ICON
     exit 1
 fi
 
@@ -48,14 +50,14 @@ output=$("$MEDIA_CONTROL" get 2>/dev/null)
 
 # Check if we got valid JSON output
 if [ $? -ne 0 ] || [ -z "$output" ]; then
-    alerter -title "Media" -message "No content" -timeout 5 -sender $SENDER
+    $ALERTER --title "Media" --message "No content" --timeout 5 --app-icon $FINDER_ICON
     exit 0
 fi
 
 # Check if there's actually media playing
 bundle_id=$(echo "$output" | jq -r '.bundleIdentifier // empty')
 if [ -z "$bundle_id" ] || [ "$bundle_id" = "null" ]; then
-    alerter -title "Media" -message "No content" -timeout 5 -sender $SENDER
+    $ALERTER --title "Media" --message "No content" --timeout 5 --app-icon $FINDER_ICON
     exit 0
 fi
 
@@ -83,10 +85,10 @@ message="$artist - $album"
 imagePath=$(save_artwork "$artwork" "$TEMP_IMAGE")
 
 # Build alerter command
-cmd="alerter --title \"$title\" --message \"$message\" --timeout \"$TIMEOUT\" --sender \"$SENDER\" -actions Research,Lyrics"
+cmd="$ALERTER --title \"$title\" --message \"$message\" --timeout \"$TIMEOUT\" --app-icon \"$FINDER_ICON\" --actions Research,Lyrics"
 
 if [ -n "$imagePath" ] && [ -f "$imagePath" ]; then
-    cmd+=" -contentImage \"$imagePath\""
+    cmd+=" --content-image \"$imagePath\""
 fi
 
 # Execute alerter and handle response
