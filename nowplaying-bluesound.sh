@@ -16,6 +16,20 @@ extract_tag() {
     echo "$response" | sed -n "s/.*<$tag>\(.*\)<\/$tag>.*/\1/p" | perl -MHTML::Entities -pe 'decode_entities($_);'
 }
 
+# Function to extract plain text from Bluesound title fields
+extract_track_title() {
+    local title_field="$1"
+    local title
+
+    title=$(echo "$title_field" | sed -n 's/.*title="\([^"]*\)".*/\1/p')
+    if [ -n "$title" ]; then
+        echo "$title"
+        return
+    fi
+
+    echo "$title_field" | sed -E 's/^title="//; s/",$//; s/"$//'
+}
+
 # Function to download artwork
 download_artwork() {
     local url="$1"
@@ -66,14 +80,30 @@ response=$($CURL -s "http://${BLUESOUND_HOST}/Status")
 # Extract metadata
 album=$(extract_tag "$response" "album")
 artist=$(extract_tag "$response" "artist")
-title=$(extract_tag "$response" "title1")
+title_field=$(extract_tag "$response" "title1")
+title=$(extract_track_title "$title_field")
 image_path=$(extract_tag "$response" "image")
+stream_url=$(extract_tag "$response" "streamUrl")
+service_name=$(extract_tag "$response" "serviceName")
 state=$(extract_tag "$response" "state")
 
-# Exit if no song is playing (empty title or stopped state)
+if [ -z "$artist" ]; then
+    artist=$(echo "$title_field" | sed -n 's/.*artist="\([^"]*\)".*/\1/p')
+fi
+
+if [ -z "$album" ]; then
+    album=$(echo "$title_field" | sed -n 's/.*album="\([^"]*\)".*/\1/p')
+fi
+
+# Exit if no stream or track is playing
 if [ -z "$title" ] || [ "$state" == "stop" ]; then
-    $ALERTER --title "Bluesound" --message "Playback stopped" --timeout 5 --app-icon $ICON
-    exit 0
+    if [ -n "$service_name" ] || [ -n "$stream_url" ]; then
+        title="${service_name:-Bluesound}"
+        message="${artist:-Unknown Artist} - ${album:-${stream_url:-Unknown Stream}}"
+    else
+        $ALERTER --title "Bluesound" --message "Playback stopped" --timeout 5 --app-icon $ICON
+        exit 0
+    fi
 fi
 
 # Download artwork
@@ -81,7 +111,9 @@ image_url="http://${BLUESOUND_HOST}${image_path}"
 download_artwork "$image_url" "$TEMP_IMAGE"
 
 # Construct notification message
-message="$artist - $album"
+if [ -z "$message" ]; then
+    message="$artist - $album"
+fi
 
 # Build $ALERTER command
 cmd="$ALERTER --title \"$title\" --message \"$message\" --timeout \"$TIMEOUT\" --app-icon \"$ICON\" --actions Research,Lyrics"
