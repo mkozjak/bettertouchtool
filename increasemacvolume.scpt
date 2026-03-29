@@ -13,6 +13,6 @@ set volume output volume newVolume
 set volumePercent to (output volume of (get volume settings))
 
 -- Set the OSD position (replace with your desired value or fetch from BTT if available)
-set volume_osd_position to "center"
+set volume_osd_position to "top-center"
 
 do shell script "/usr/local/bin/volume-control-osd --volume " & volumePercent & " --title " & quoted form of BTTCurrentAudioOutputDevice & " --position " & volume_osd_position
