@@ -80,11 +80,16 @@ response=$($CURL -s "http://${BLUESOUND_HOST}/Status")
 # Extract metadata
 album=$(extract_tag "$response" "album")
 artist=$(extract_tag "$response" "artist")
-title_field=$(extract_tag "$response" "title1")
+title1=$(extract_tag "$response" "title1")
+title2=$(extract_tag "$response" "title2")
+title3=$(extract_tag "$response" "title3")
+title_field="$title1"
 title=$(extract_track_title "$title_field")
 image_path=$(extract_tag "$response" "image")
 stream_url=$(extract_tag "$response" "streamUrl")
+service=$(extract_tag "$response" "service")
 service_name=$(extract_tag "$response" "serviceName")
+service_type=$(extract_tag "$response" "serviceType")
 state=$(extract_tag "$response" "state")
 
 if [ -z "$artist" ]; then
@@ -95,9 +100,43 @@ if [ -z "$album" ]; then
     album=$(echo "$title_field" | sed -n 's/.*album="\([^"]*\)".*/\1/p')
 fi
 
+is_radio=false
+if [ "$service" = "TuneIn" ] && [ "$service_type" = "RadioService" ]; then
+    is_radio=true
+fi
+
+if [ "$is_radio" = true ]; then
+    title="$title1"
+    radio_artist=""
+    radio_track=""
+    if [ -n "$title2" ]; then
+        radio_artist=$(echo "$title2" | sed -E 's/ - .*//')
+        radio_track=$(echo "$title2" | sed -E 's/^.* - //')
+    fi
+
+    if [ -n "$radio_artist" ]; then
+        artist="$radio_artist"
+    fi
+    if [ -n "$radio_track" ]; then
+        title="$title1"
+        message="$radio_artist - $radio_track"
+    else
+        message="$title1"
+    fi
+fi
+
+if [ -z "$album" ]; then
+    album=$(echo "$title_field" | sed -n 's/.*album="\([^"]*\)".*/\1/p')
+fi
+
 # Exit if no stream or track is playing
 if [ -z "$title" ] || [ "$state" == "stop" ]; then
-    if [ -n "$service_name" ] || [ -n "$stream_url" ]; then
+    if [ "$is_radio" = true ] && [ -n "$title1" ]; then
+        title="$title1"
+        if [ -z "$message" ]; then
+            message="${artist:-Unknown Artist} - ${title2:-Unknown Track}"
+        fi
+    elif [ -n "$service_name" ] || [ -n "$stream_url" ]; then
         title="${service_name:-Bluesound}"
         message="${artist:-Unknown Artist} - ${album:-${stream_url:-Unknown Stream}}"
     else
