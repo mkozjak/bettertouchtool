@@ -121,10 +121,11 @@ if [ "$is_radio" = true ]; then
         artist="$radio_artist"
     fi
     if [ -n "$radio_track" ]; then
-        title="$title1"
-        message="$radio_artist - $radio_track"
+        title="$radio_track"
+        message="$radio_artist"
     else
-        message="$title1"
+        title="$title2"
+        message=""
     fi
 fi
 
