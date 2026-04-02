@@ -112,6 +112,9 @@ if [ "$is_radio" = true ]; then
     if [ -n "$title2" ]; then
         radio_artist=$(echo "$title2" | sed -E 's/ - .*//')
         radio_track=$(echo "$title2" | sed -E 's/^.* - //')
+        # Capitalize artist and track (first letter upper, rest lower, Unicode-aware)
+        radio_artist=$(echo "$radio_artist" | perl -CS -pe 's/(\S+)/\u\L$1/g')
+        radio_track=$(echo "$radio_track" | perl -CS -pe 's/(\S+)/\u\L$1/g')
     fi
 
     if [ -n "$radio_artist" ]; then
